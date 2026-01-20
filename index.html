@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Loom of Existence v3.9</title>
+    <title>The Loom v4.0: Infinite</title>
     
     <meta property="og:title" content="The Loom of Existence">
-    <meta property="og:description" content="Weave the fabric of reality. Now with Skill Trees.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧶</text></svg>">
 
     <style>
@@ -22,6 +21,7 @@
         [data-theme="matrix"] { --bg: #000000; --panel: #0a0a0a; --text: #00ff00; --high: #00ff00; --acc: #008800; --bord: #003300; --font: 'Courier New', monospace; --btn: #001100; }
         [data-theme="cotton"] { --bg: #ffeaf5; --panel: #e0f7fa; --text: #555; --high: #ff69b4; --acc: #87ceeb; --bord: #ffc0cb; --font: 'Verdana', sans-serif; --btn: #fff0f5; }
         [data-theme="contrast"] { --bg: #000; --panel: #000; --text: #fff; --high: #fff; --acc: #fff; --bord: #fff; --font: 'Arial', sans-serif; --btn: #000; }
+        [data-theme="nebula"] { --bg: #120b29; --panel: #241645; --text: #e0ccff; --high: #00ffff; --acc: #ff00ff; --bord: #482c8a; --font: 'Trebuchet MS', sans-serif; --btn: #351c6e; }
 
         body {
             background-color: var(--bg); color: var(--text); font-family: var(--font);
@@ -31,7 +31,7 @@
 
         /* --- LAYOUT --- */
         #ticker-wrap { background: var(--panel); border-bottom: 1px solid var(--bord); height: 35px; overflow: hidden; display: flex; align-items: center; font-size: 0.9rem; flex-shrink: 0; }
-        #ticker { display: inline-block; padding-left: 100%; animation: scroll 40s linear infinite; color: var(--high); font-weight: bold; white-space: nowrap; }
+        #ticker { display: inline-block; padding-left: 100%; animation: scroll 60s linear infinite; color: var(--high); font-weight: bold; white-space: nowrap; }
         @keyframes scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         #app { display: grid; grid-template-rows: auto 1fr auto; height: 100%; max-width: 800px; margin: 0 auto; width: 100%; border-left: 1px solid var(--bord); border-right: 1px solid var(--bord); background: var(--bg); position: relative; }
@@ -69,33 +69,29 @@
         .buy-toggle { padding: 5px 10px; font-size: 0.8rem; background: var(--panel); border: 1px solid var(--bord); color: var(--text); cursor: pointer; }
         .buy-toggle.active { background: var(--high); color: var(--bg); border-color: var(--high); font-weight: bold; }
 
-        /* --- THE TAPESTRY (TREE) --- */
-        .tree-container { display: flex; flex-direction: column; align-items: center; padding-top: 20px; position: relative; }
-        .tree-row { display: flex; justify-content: center; gap: 40px; margin-bottom: 50px; position: relative; width: 100%; }
-        
-        .tree-node {
-            width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--bord);
-            background: var(--panel); color: var(--text); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; z-index: 2; transition: all 0.3s;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); font-weight: bold; font-size: 1.2rem;
-        }
-        .tree-node:hover { transform: scale(1.1); }
-        .tree-node.unlocked { border-color: #d8bfd8; color: #d8bfd8; box-shadow: 0 0 15px rgba(216, 191, 216, 0.3); }
-        .tree-node.bought { background: #d8bfd8; color: #000; border-color: #fff; box-shadow: 0 0 20px #d8bfd8; }
-        .tree-node.locked { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+        /* --- THE TAPESTRY (TREE v2) --- */
+        .tree-container { display: flex; flex-direction: column; align-items: center; padding-top: 10px; position: relative; padding-bottom: 50px; }
+        .tree-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; position: relative; width: 100%; }
+        .row-connector { text-align: center; color: var(--bord); font-size: 1.5rem; margin-top: -30px; margin-bottom: 10px; opacity: 0.5; }
 
-        .tree-connector {
-            position: absolute; background: var(--bord); width: 4px; z-index: 1; transform-origin: top center;
+        .tree-node {
+            width: 90px; height: 90px; border-radius: 12px; border: 2px solid var(--bord);
+            background: var(--panel); color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; z-index: 2; transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 0.8rem; text-align: center; padding: 5px;
         }
+        .tree-node:hover { transform: scale(1.05); z-index: 10; }
         
-        /* Node specific positions handled in JS or simplified CSS structure */
-        .node-label {
-            position: absolute; bottom: -45px; width: 120px; text-align: center; left: 50%; transform: translateX(-50%);
-            font-size: 0.7rem; background: rgba(0,0,0,0.8); padding: 4px; border-radius: 4px; pointer-events: none;
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .tree-node:hover .node-label { opacity: 1; z-index: 10; }
-        .node-cost { color: #ffa500; font-weight: bold; display: block; margin-top: 2px;}
+        .tree-node.unlocked { border-color: #d8bfd8; color: #d8bfd8; box-shadow: 0 0 10px rgba(216, 191, 216, 0.2); }
+        .tree-node.bought { background: #d8bfd8; color: #220022; border-color: #fff; box-shadow: 0 0 20px #d8bfd8; font-weight: bold; }
+        
+        /* Persistent Description Styling */
+        .tree-node .node-name { font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
+        .tree-node .node-desc { font-size: 0.65rem; opacity: 0.8; line-height: 1.1; }
+        .tree-node.bought .node-desc { opacity: 1; font-weight: normal; }
+        .tree-node .node-cost { margin-top: 4px; font-size: 0.7rem; color: var(--acc); background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px;}
+        .tree-node.bought .node-cost { display: none; }
+        .tree-node.locked { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
 
         /* --- GOLDEN THREAD --- */
         #golden-thread {
@@ -106,19 +102,18 @@
         }
         @keyframes float { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-        /* --- STATS BOX & GRID --- */
+        /* --- STATS & MISC --- */
         .stats-box { background: rgba(0,0,0,0.2); border: 1px solid var(--bord); padding: 10px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9rem; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px dashed #333; padding-bottom: 2px; }
+        
         .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
         .theme-btn { padding: 10px; border: 1px solid var(--bord); background: var(--panel); color: var(--text); cursor: pointer; font-size: 0.8rem;}
         .theme-btn.locked { opacity: 0.5; cursor: not-allowed; background: #000; }
         
-        /* --- C.A.T. --- */
         .cat-container { text-align: center; border: 2px solid #ffa500; background: rgba(255, 165, 0, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
         .cat-eye { font-size: 4rem; animation: blink 4s infinite; display: inline-block; transform: scaleY(0.8); color: #ffa500; }
         @keyframes blink { 0%, 96%, 100% { transform: scaleY(0.8); } 98% { transform: scaleY(0.1); } }
 
-        /* --- TOAST --- */
         #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); pointer-events: none; z-index: 100; }
         .toast { background: var(--high); color: var(--bg); padding: 10px 20px; margin-top: 5px; border-radius: 4px; text-align: center; font-weight: bold; animation: slideUp 0.5s ease, fadeOut 0.5s 3s forwards; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -128,12 +123,16 @@
         .save-btn { flex:1; padding:8px; cursor:pointer; background:var(--panel); border:1px solid var(--bord); color:var(--text); }
         .glow-btn { animation: glowPulse 2s infinite; border-color: #d8bfd8; box-shadow: 0 0 10px #d8bfd8; }
         @keyframes glowPulse { 0% { box-shadow: 0 0 5px #d8bfd8; } 50% { box-shadow: 0 0 20px #d8bfd8; } 100% { box-shadow: 0 0 5px #d8bfd8; } }
+        
+        .ach-grid { display: grid; grid-template-columns: 1fr; gap: 5px; max-height: 300px; overflow-y: auto; }
+        .ach-item { border-bottom:1px solid #333; padding:5px; font-size: 0.9rem; }
+        .ach-reward { font-size:0.7rem; opacity:0.7; margin-top: 2px; }
     </style>
 </head>
 <body data-theme="standard">
 
     <div id="ticker-wrap">
-        <div id="ticker">System initialized... The C.A.T. is watching...</div>
+        <div id="ticker">System initialized... The C.A.T. watches...</div>
     </div>
     
     <div id="golden-thread" onclick="clickGoldenThread()"></div>
@@ -164,7 +163,7 @@
         <div id="tab-tapestry" class="tab-content">
             <div class="prestige-header" style="text-align:center; margin-bottom:20px; border-bottom:1px solid var(--bord); padding-bottom:10px;">
                 <h3 style="color:#d8bfd8; margin:0;">THE TAPESTRY</h3>
-                <p style="font-size:0.8rem; color:#a0a0a0;">Weave Silk into the structure of reality itself.</p>
+                <p style="font-size:0.8rem; color:#a0a0a0;">Evolve the structure of reality.</p>
                 <div style="font-size:1.2rem; margin:10px 0;">Available Silk: <span id="tree-silk" style="color:#d8bfd8; font-weight:bold;">0</span></div>
                 
                 <div style="font-size:0.9rem; margin-top:5px;">Prestige Pending: <span id="pending-silk" style="color:#fff;">0</span> Silk</div>
@@ -173,33 +172,7 @@
             </div>
             
             <div class="tree-container" id="skill-tree">
-                <div class="tree-row">
-                    <div class="tree-node" id="node-0" onclick="buyTreeNode(0)">●
-                        <div class="node-label">Origin Knot<br>Global MPS +50%<span class="node-cost">5 Silk</span></div>
-                    </div>
                 </div>
-                <div class="tree-row">
-                    <div class="tree-node" id="node-1" onclick="buyTreeNode(1)">👁
-                        <div class="node-label">Golden Eye<br>Golden Threads 2x Freq<span class="node-cost">15 Silk</span></div>
-                    </div>
-                    <div class="tree-node" id="node-2" onclick="buyTreeNode(2)">⚡
-                        <div class="node-label">Efficiency<br>Costs -10%<span class="node-cost">15 Silk</span></div>
-                    </div>
-                </div>
-                <div class="tree-row">
-                    <div class="tree-node" id="node-3" onclick="buyTreeNode(3)">⚒
-                        <div class="node-label">Manual Tension<br>Click +1% of MPS<span class="node-cost">50 Silk</span></div>
-                    </div>
-                    <div class="tree-node" id="node-4" onclick="buyTreeNode(4)">★
-                        <div class="node-label">Synergy<br>+2% MPS per Achieve<span class="node-cost">50 Silk</span></div>
-                    </div>
-                </div>
-                 <div class="tree-row">
-                    <div class="tree-node" id="node-5" onclick="buyTreeNode(5)">∞
-                        <div class="node-label">Chronos<br>+10% MPS per Hour Played<span class="node-cost">100 Silk</span></div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div id="tab-cat" class="tab-content">
@@ -223,10 +196,11 @@
                 <div class="stats-row"><span>Lifetime Threads:</span> <span id="stat-lifetime" style="color:#fff">0</span></div>
                 <div class="stats-row"><span>Manual Clicks:</span> <span id="stat-clicks">0</span></div>
                 <div class="stats-row"><span>Play Time:</span> <span id="stat-time">0m</span></div>
+                <div class="stats-row"><span>Achievements:</span> <span id="stat-ach">0</span></div>
             </div>
 
             <h3 style="color:var(--high)">Achievements</h3>
-            <div id="achievements-list"></div>
+            <div id="achievements-list" class="ach-grid"></div>
             
             <h3 style="color:var(--high); margin-top:20px;">Themes</h3>
             <div class="theme-grid" id="theme-selector">
@@ -237,6 +211,7 @@
                 <button class="theme-btn" onclick="setTheme('matrix')">Matrix</button>
                 <button class="theme-btn" onclick="setTheme('cotton')">Cotton</button>
                 <button class="theme-btn" onclick="setTheme('contrast')">Contrast</button>
+                <button class="theme-btn" onclick="setTheme('nebula')" style="border:1px solid #a0f;">Nebula</button>
                 <button class="theme-btn" id="theme-btn-golden" onclick="setTheme('golden')">GOLDEN</button>
             </div>
 
@@ -259,7 +234,7 @@
     <div id="toast-container"></div>
 
     <script>
-        /* --- GAME DATA --- */
+        /* --- GAME DATA V4.0 --- */
         let buyAmount = 1;
         const gameData = {
             threads: 0, totalThreads: 0, lifetimeTotal: 0, silk: 0, clicks: 0,
@@ -273,7 +248,10 @@
                 { id: 4, name: "Timeline Splicer", baseCost: 130000, mps: 250, count: 0 },
                 { id: 5, name: "Big Bang Forge", baseCost: 1500000, mps: 1000, count: 0 },
                 { id: 6, name: "Reality Engine", baseCost: 15000000, mps: 5000, count: 0 },
-                { id: 7, name: "Black Hole Weaver", baseCost: 250000000, mps: 25000, count: 0 }
+                { id: 7, name: "Black Hole Weaver", baseCost: 250000000, mps: 25000, count: 0 },
+                // V4.0 NEW
+                { id: 8, name: "Hyper-String Guitar", baseCost: 5000000000, mps: 120000, count: 0 },
+                { id: 9, name: "The Narrative Device", baseCost: 99000000000, mps: 600000, count: 0 }
             ],
             upgrades: [
                 { id: 0, name: "Thimble", cost: 250, type: "click", mult: 2, bought: false, desc: "Click x2" },
@@ -282,15 +260,27 @@
                 { id: 3, name: "Neon Thread", cost: 15000, type: "gen", gId: 1, mult: 2, bought: false, desc: "Needle x2" },
                 { id: 4, name: "The Algorithm", cost: 200000, type: "global", mult: 1.2, bought: false, desc: "Global +20%" },
                 { id: 5, name: "Flux Capacitor", cost: 25000000, type: "gen", gId: 6, mult: 2, bought: false, desc: "Engine x2" },
-                { id: 6, name: "Quantum Entanglement", cost: 500000, type: "synergy", from: 0, to: 4, mult: 0.01, bought: false, desc: "Rollers boost Splicers" }
+                { id: 6, name: "Quantum Entanglement", cost: 500000, type: "synergy", from: 0, to: 4, mult: 0.01, bought: false, desc: "Rollers boost Splicers" },
+                // V4.0 NEW
+                { id: 7, name: "Event Horizon", cost: 1000000000, type: "gen", gId: 7, mult: 3, bought: false, desc: "Black Hole x3" },
+                { id: 8, name: "Resonance", cost: 25000000000, type: "gen", gId: 8, mult: 2, bought: false, desc: "Guitars x2" },
+                { id: 9, name: "Author's Note", cost: 500000000000, type: "gen", gId: 9, mult: 2, bought: false, desc: "Narrative x2" }
             ],
             tree: [
-                { id: 0, name: "Origin Knot", cost: 5, bought: false, parent: null, desc: "+50% Global MPS" },
-                { id: 1, name: "Golden Eye", cost: 15, bought: false, parent: 0, desc: "Golden Threads x2" },
-                { id: 2, name: "Efficiency", cost: 15, bought: false, parent: 0, desc: "-10% Costs" },
-                { id: 3, name: "Manual Tension", cost: 50, bought: false, parent: 1, desc: "Click gets +1% MPS" },
-                { id: 4, name: "Synergy", cost: 50, bought: false, parent: 2, desc: "+2% MPS per Achievement" },
-                { id: 5, name: "Chronos", cost: 100, bought: false, parent: 0, desc: "+10% MPS per Hour" }
+                // Row 1
+                { id: 0, row: 1, name: "Origin Knot", cost: 5, bought: false, parent: null, desc: "+50% Global MPS" },
+                // Row 2
+                { id: 1, row: 2, name: "Golden Eye", cost: 15, bought: false, parent: 0, desc: "Golden Threads x2 Freq" },
+                { id: 2, row: 2, name: "Efficiency", cost: 15, bought: false, parent: 0, desc: "-10% All Costs" },
+                // Row 3
+                { id: 3, row: 3, name: "Tension", cost: 50, bought: false, parent: 1, desc: "Click gets +1% MPS" },
+                { id: 4, row: 3, name: "Synergy", cost: 50, bought: false, parent: 2, desc: "+2% MPS per Achievement" },
+                // Row 4 (V4.0)
+                { id: 5, row: 4, name: "Passive Silk", cost: 150, bought: false, parent: 3, desc: "Generate 1 Silk/min" },
+                { id: 6, row: 4, name: "Deep Pockets", cost: 100, bought: false, parent: 2, desc: "Start runs with 2500 Threads" },
+                { id: 7, row: 4, name: "Chronos", cost: 100, bought: false, parent: 4, desc: "+10% MPS per Hour Played" },
+                // Row 5
+                { id: 8, row: 5, name: "Ascension", cost: 500, bought: false, parent: 7, desc: "Global MPS x3" }
             ],
             achievements: [
                 { id: "a1", name: "First Stitch", req: 100, type: "total", unlocked: false, reward: "+1 Click", rewardDesc: "+1 Base Click" },
@@ -299,13 +289,21 @@
                 { id: "a4", name: "Hoarder", req: 1000000, type: "current", unlocked: false, reward: "-1% Cost", rewardDesc: "-1% Costs" },
                 { id: "a5", name: "Cat Servant", req: 1, type: "cat", unlocked: false, reward: "Respect", rewardDesc: "The Cat tolerates you" },
                 { id: "a6", name: "Curiosity", req: 1, type: "punish", unlocked: false, reward: "Shame", rewardDesc: "Learned a lesson" },
-                { id: "a7", name: "Completionist", req: 11, type: "count", unlocked: false, reward: "Theme", rewardDesc: "Gold Theme" },
+                { id: "a7", name: "Completionist", req: 20, type: "count", unlocked: false, reward: "Theme", rewardDesc: "Gold Theme" },
                 { id: "a8", name: "Speed Demon", req: 1000000, type: "mps", unlocked: false, reward: "+5% MPS", rewardDesc: "+5% Global MPS" },
                 { id: "a9", name: "Finger Workout", req: 5000, type: "clicks", unlocked: false, reward: "+2 Click", rewardDesc: "+2 Base Click" },
                 { id: "a10", name: "Architect", req: 500, type: "buildings", unlocked: false, reward: "-2% Cost", rewardDesc: "-2% Building Cost" },
                 { id: "a11", name: "Millionaire", req: 1000000, type: "silk", unlocked: false, reward: "+10% MPS", rewardDesc: "+10% Global MPS" },
                 { id: "a12", name: "Clicking Frenzy", req: 10000, type: "clicks", unlocked: false, reward: "+5 Click", rewardDesc: "+5 Base Click" },
-                { id: "a13", name: "Time Lord", req: 60, type: "time", unlocked: false, reward: "-1% Cost", rewardDesc: "-1% Costs" }
+                { id: "a13", name: "Time Lord", req: 60, type: "time", unlocked: false, reward: "-1% Cost", rewardDesc: "-1% Costs" },
+                // V4.0 NEW
+                { id: "a14", name: "Billionaire", req: 1000000000, type: "total", unlocked: false, reward: "+5% MPS", rewardDesc: "+5% MPS" },
+                { id: "a15", name: "Trillionaire", req: 1000000000000, type: "total", unlocked: false, reward: "+5% MPS", rewardDesc: "+5% MPS" },
+                { id: "a16", name: "Carpal Tunnel", req: 25000, type: "clicks", unlocked: false, reward: "+10 Click", rewardDesc: "+10 Base Click" },
+                { id: "a17", name: "Nebula", req: 5, type: "tree", unlocked: false, reward: "Theme", rewardDesc: "Nebula Theme" },
+                { id: "a18", name: "Dedicated", req: 300, type: "time", unlocked: false, reward: "-2% Cost", rewardDesc: "-2% Costs (5hrs)" },
+                { id: "a19", name: "Black Hole", req: 1, type: "gen8", unlocked: false, reward: "Dense", rewardDesc: "Unlock Narratives" },
+                { id: "a20", name: "Infinity", req: 1000000000000000, type: "total", unlocked: false, reward: "Ego", rewardDesc: "You are the Loom" }
             ]
         };
 
@@ -314,18 +312,23 @@
             "Local spider files copyright claim.", "Error 404: Universe not found.",
             "Updating the matrix...", "The Reality Engine hums.",
             "Golden Threads spotted in the wild.", "Buying in bulk saves time!",
-            "The Tapestry expands...", "Knot theory applied to shoelaces."
+            "The Tapestry expands...", "Knot theory applied to shoelaces.",
+            "Dark matter is just accumulated lint.", "String Theory confirmed: It is E-String.",
+            "The C.A.T. is napping on the server.", "Warning: Narrative device overheating.",
+            "Who writes the achievements? You do.", "Infinite monkeys typing infinite code...",
+            "Your finger must be tired.", "Sponsor: wormholes-r-us.",
+            "Is the universe a hologram or a knitting project?", "Buffering reality...",
+            "Patch v4.0 loaded successfully."
         ];
 
         /* --- ENGINE --- */
         function getCost(base, count, amount) {
             let discount = 1;
-            // Tree: Efficiency
             if(gameData.tree[2].bought) discount *= 0.9;
-            
             if(gameData.achievements.find(a=>a.id==='a4' && a.unlocked)) discount *= 0.99; 
             if(gameData.achievements.find(a=>a.id==='a10' && a.unlocked)) discount *= 0.98;
             if(gameData.achievements.find(a=>a.id==='a13' && a.unlocked)) discount *= 0.99;
+            if(gameData.achievements.find(a=>a.id==='a18' && a.unlocked)) discount *= 0.98;
 
             const r = 1.15;
             let totalCost = 0;
@@ -342,24 +345,24 @@
             let globalMult = 1;
             gameData.upgrades.filter(u=>u.bought && u.type==='global').forEach(u => globalMult *= u.mult);
             
-            // Tree: Origin Knot
+            // Tree Bonuses
             if(gameData.tree[0].bought) globalMult *= 1.5;
-            // Tree: Chronos
-            if(gameData.tree[5].bought) {
+            if(gameData.tree[7].bought) {
                 const hours = (Date.now() - gameData.startTime) / 3600000;
                 globalMult *= (1 + (hours * 0.1));
             }
-            // Tree: Synergy
             if(gameData.tree[4].bought) {
                 const count = gameData.achievements.filter(a => a.unlocked).length;
                 globalMult *= (1 + (count * 0.02));
             }
+            if(gameData.tree[8].bought) globalMult *= 3;
 
             globalMult *= (1 + gameData.catLevel);
-
             if(gameData.achievements.find(a=>a.id==='a2' && a.unlocked)) globalMult *= 1.05; 
             if(gameData.achievements.find(a=>a.id==='a8' && a.unlocked)) globalMult *= 1.05; 
             if(gameData.achievements.find(a=>a.id==='a11' && a.unlocked)) globalMult *= 1.10;
+            if(gameData.achievements.find(a=>a.id==='a14' && a.unlocked)) globalMult *= 1.05;
+            if(gameData.achievements.find(a=>a.id==='a15' && a.unlocked)) globalMult *= 1.05;
 
             gameData.generators.forEach(g => {
                 let mult = 1;
@@ -378,10 +381,11 @@
             if(gameData.achievements.find(a=>a.id==='a1' && a.unlocked)) power += 1;
             if(gameData.achievements.find(a=>a.id==='a9' && a.unlocked)) power += 2;
             if(gameData.achievements.find(a=>a.id==='a12' && a.unlocked)) power += 5;
+            if(gameData.achievements.find(a=>a.id==='a16' && a.unlocked)) power += 10;
+            
             gameData.upgrades.filter(u=>u.bought && u.type==='click').forEach(u => power *= u.mult);
             
             let mpsPercent = 0.03;
-            // Tree: Manual Tension
             if(gameData.tree[3].bought) mpsPercent += 0.01;
             
             power += (getMPS() * mpsPercent); 
@@ -424,13 +428,12 @@
             }
         }
 
-        /* --- TREE SYSTEM (v3.9) --- */
+        /* --- TREE SYSTEM V4.0 --- */
         function buyTreeNode(id) {
-            const node = gameData.tree[id];
-            if(node.bought) return;
+            const node = gameData.tree.find(n => n.id === id);
+            if(!node || node.bought) return;
             
-            // Check Parent
-            if(node.parent !== null && !gameData.tree[node.parent].bought) {
+            if(node.parent !== null && !gameData.tree.find(n=>n.id === node.parent).bought) {
                 showToast("Unlock previous node first.");
                 return;
             }
@@ -446,26 +449,52 @@
         }
 
         function renderTree() {
-            gameData.tree.forEach(node => {
-                const el = document.getElementById(`node-${node.id}`);
-                el.classList.remove('locked', 'unlocked', 'bought');
-                
-                if(node.bought) {
-                    el.classList.add('bought');
-                    el.innerHTML = `✔<div class="node-label">${node.name}<br>${node.desc}</div>`;
-                } else {
-                    // Check availability
-                    let available = true;
-                    if(node.parent !== null && !gameData.tree[node.parent].bought) available = false;
-                    
-                    if(available) {
-                        el.classList.add('unlocked');
-                        if(gameData.silk < node.cost) el.style.opacity = 0.7; else el.style.opacity = 1;
-                        el.innerHTML = `●<div class="node-label">${node.name}<br>${node.desc}<span class="node-cost">${node.cost} Silk</span></div>`;
-                    } else {
-                        el.classList.add('locked');
-                        el.innerHTML = `🔒<div class="node-label">Locked</div>`;
+            const container = document.getElementById('skill-tree');
+            container.innerHTML = "";
+            
+            // Organize by Rows
+            const rows = [1, 2, 3, 4, 5];
+            rows.forEach(rNum => {
+                const nodesInRow = gameData.tree.filter(n => n.row === rNum);
+                if(nodesInRow.length > 0) {
+                    // Visual Connector
+                    if(rNum > 1) {
+                         const conn = document.createElement('div');
+                         conn.className = 'row-connector';
+                         conn.innerHTML = "↓";
+                         container.appendChild(conn);
                     }
+
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'tree-row';
+                    
+                    nodesInRow.forEach(node => {
+                        const el = document.createElement('div');
+                        el.className = 'tree-node';
+                        
+                        let parentBought = (node.parent === null) ? true : gameData.tree.find(n=>n.id === node.parent).bought;
+                        
+                        if(node.bought) {
+                            el.classList.add('bought');
+                        } else if (parentBought) {
+                            el.classList.add('unlocked');
+                        } else {
+                            el.classList.add('locked');
+                        }
+                        
+                        // onclick
+                        el.onclick = () => buyTreeNode(node.id);
+
+                        // Content (V4.0 FIX: Keep Description)
+                        el.innerHTML = `
+                            <div class="node-name">${node.bought ? '✔ ' + node.name : node.name}</div>
+                            <div class="node-desc">${node.desc}</div>
+                            <div class="node-cost">${node.cost} Silk</div>
+                        `;
+                        
+                        rowDiv.appendChild(el);
+                    });
+                    container.appendChild(rowDiv);
                 }
             });
         }
@@ -482,7 +511,8 @@
         }
 
         function resetRun() {
-            gameData.threads = 0;
+            // Tree: Deep Pockets
+            gameData.threads = gameData.tree[6].bought ? 2500 : 0;
             gameData.totalThreads = 0;
             gameData.generators.forEach(g => g.count = 0);
             gameData.upgrades.forEach(u => u.bought = false);
@@ -535,7 +565,10 @@
             if(num < 1000000) return (num/1000).toFixed(2) + "k";
             if(num < 1000000000) return (num/1000000).toFixed(2) + "M";
             if(num < 1000000000000) return (num/1000000000).toFixed(2) + "B";
-            return (num/1000000000000).toFixed(2) + "T";
+            if(num < 1000000000000000) return (num/1000000000000).toFixed(2) + "T";
+            if(num < 1000000000000000000) return (num/1000000000000000).toFixed(2) + "q";
+            if(num < 1000000000000000000000) return (num/1000000000000000000).toFixed(2) + "Q";
+            return "Inf";
         }
 
         function showToast(msg) {
@@ -547,6 +580,12 @@
         }
 
         function setTheme(name) {
+            if(name === 'golden') {
+                if(gameData.achievements.filter(a => a.unlocked).length < 20) { showToast("Locked: Need 20 Achievements"); return; }
+            }
+            if(name === 'nebula') {
+                 if(!gameData.achievements.find(a=>a.id==='a17').unlocked) { showToast("Locked: Need 5 Skills"); return; }
+            }
             document.body.setAttribute('data-theme', name);
             gameData.theme = name;
         }
@@ -561,13 +600,16 @@
             document.getElementById('tab-' + id).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            
+            if(id === 'tapestry') renderTree();
         }
 
         /* --- SAVE/LOAD --- */
-        function saveGame() { localStorage.setItem('loomSaveV39', JSON.stringify(gameData)); }
+        function saveGame() { localStorage.setItem('loomSaveV40', JSON.stringify(gameData)); }
         function loadGame() {
-            let save = JSON.parse(localStorage.getItem('loomSaveV39'));
+            let save = JSON.parse(localStorage.getItem('loomSaveV40'));
             // Backwards Compat
+            if(!save) save = JSON.parse(localStorage.getItem('loomSaveV39'));
             if(!save) save = JSON.parse(localStorage.getItem('loomSaveV38'));
             if(!save) save = JSON.parse(localStorage.getItem('loomSaveV37'));
 
@@ -581,21 +623,18 @@
                 if(save.theme) setTheme(save.theme);
                 if(save.catLevel) gameData.catLevel = save.catLevel;
                 
-                // Refund old silk upgrades if coming from V3.8 or lower
-                if(save.silkUpgrades && !save.tree) {
-                     // logic: simple refund
-                     save.silkUpgrades.forEach(u => { if(u.bought) gameData.silk += u.cost; });
-                     showToast("System Update: Silk Upgrades Refunded");
-                } else if(save.tree) {
-                    save.tree.forEach((t,i) => { if(gameData.tree[i]) gameData.tree[i].bought = t.bought; });
-                }
-
                 if(save.generators) save.generators.forEach((g,i) => { if(gameData.generators[i]) gameData.generators[i].count = g.count; });
                 if(save.upgrades) save.upgrades.forEach((u,i) => { if(gameData.upgrades[i]) gameData.upgrades[i].bought = u.bought; });
+                // Merge Tree with ID check
+                if(save.tree) save.tree.forEach(t => { 
+                    const match = gameData.tree.find(n => n.id === t.id);
+                    if(match) match.bought = t.bought; 
+                });
+                // Merge Achievements
                 if(save.achievements) save.achievements.forEach((a,i) => { if(gameData.achievements[i]) gameData.achievements[i].unlocked = a.unlocked; });
             }
         }
-        function hardReset() { if(confirm("Wipe EVERYTHING?")) { localStorage.removeItem('loomSaveV39'); location.reload(); } }
+        function hardReset() { if(confirm("Wipe EVERYTHING?")) { localStorage.removeItem('loomSaveV40'); location.reload(); } }
         function exportSave() {
             const str = btoa(JSON.stringify(gameData));
             navigator.clipboard.writeText(str).then(() => showToast("Save Copied!"));
@@ -606,7 +645,7 @@
             try {
                 const json = atob(str);
                 const data = JSON.parse(json);
-                localStorage.setItem('loomSaveV39', JSON.stringify(data));
+                localStorage.setItem('loomSaveV40', JSON.stringify(data));
                 location.reload();
             } catch(e) { alert("Invalid"); }
         }
@@ -624,6 +663,9 @@
                     if(a.type === 'clicks' && gameData.clicks >= a.req) u = true;
                     if(a.type === 'buildings' && gameData.generators.reduce((acc, v) => acc + v.count, 0) >= a.req) u = true;
                     if(a.type === 'time' && (Date.now()-gameData.startTime)/60000 >= a.req) u = true;
+                    if(a.type === 'tree' && gameData.tree.filter(n=>n.bought).length >= a.req) u = true;
+                    if(a.type === 'gen8' && gameData.generators[7].count >= a.req) u = true;
+
                     if(u) { a.unlocked = true; showToast(`🏆 ${a.name}`); updateUI(); }
                 }
             });
@@ -639,6 +681,7 @@
             document.getElementById('stat-lifetime').innerText = format(gameData.lifetimeTotal);
             document.getElementById('stat-clicks').innerText = gameData.clicks;
             document.getElementById('stat-time').innerText = Math.floor((Date.now() - gameData.startTime) / 60000) + "m";
+            document.getElementById('stat-ach').innerText = gameData.achievements.filter(a=>a.unlocked).length + " / " + gameData.achievements.length;
 
             // Prestige
             let pending = 0;
@@ -657,7 +700,6 @@
             // CAT Lock
             const catBtn = document.getElementById('nav-cat');
             if(gameData.lifetimeTotal < 100000000) catBtn.classList.add('locked'); else catBtn.classList.remove('locked');
-            
             document.getElementById('cat-level-display').innerText = gameData.catLevel;
             document.getElementById('cat-bonus-display').innerText = (1 + gameData.catLevel) + "x";
             document.getElementById('cat-btn').disabled = (gameData.threads < 1000000000);
@@ -687,16 +729,15 @@
             const aList = document.getElementById('achievements-list');
             aList.innerHTML = "";
             gameData.achievements.forEach(a => {
-                aList.innerHTML += `<div style="border-bottom:1px solid #333; padding:5px; ${a.unlocked?"color:var(--high); font-weight:bold;":"opacity:0.5;"}">
-                    ${a.unlocked?"✔":"🔒"} ${a.name} ${a.unlocked ? `<span class='reward-badge'>${a.reward}</span>` : ''}
-                    <div style="font-size:0.7rem; opacity:0.8; margin-left:20px;">Reward: ${a.rewardDesc}</div></div>`;
+                aList.innerHTML += `<div class="ach-item" style="${a.unlocked?"color:var(--high); font-weight:bold;":"opacity:0.5;"}">
+                    ${a.unlocked?"✔":"🔒"} ${a.name} <div class="ach-reward">Reward: ${a.rewardDesc}</div></div>`;
             });
             
-            // Golden Theme
+            // Theme Locks
             const gBtn = document.getElementById('theme-btn-golden');
-            if(gameData.achievements.filter(a => a.unlocked).length < 11) gBtn.classList.add('locked'); else gBtn.classList.remove('locked');
+            if(gameData.achievements.filter(a => a.unlocked).length < 20) gBtn.classList.add('locked'); else gBtn.classList.remove('locked');
             
-            renderTree();
+            if(document.getElementById('tab-tapestry').classList.contains('active')) renderTree();
         }
 
         setInterval(() => {
@@ -707,15 +748,26 @@
                 gameData.totalThreads += tick;
                 gameData.lifetimeTotal += tick;
             }
+            // Passive Silk (Tree Node 5)
+            if(gameData.tree[5].bought && Math.random() < 0.0017) { // roughly 1 per sec / 600 ticks... simplified logic check every tick is bad. 
+                // Better logic:
+            }
             checkAchievements();
             updateUI();
         }, 100);
+
+        // Slow loop for passive silk (once per minute)
+        setInterval(() => {
+            if(gameData.tree[5].bought) {
+                gameData.silk++;
+                showToast("+1 Silk (Passive)");
+            }
+        }, 60000);
 
         setInterval(() => { saveGame(); }, 30000);
         setInterval(() => { document.getElementById('ticker').innerText = tickerMessages[Math.floor(Math.random()*tickerMessages.length)]; }, 15000);
 
         function scheduleGoldenThread() {
-            // Tree: Golden Eye (id 1) doubles frequency (halves time)
             let minTime = 60000;
             if(gameData.tree[1].bought) minTime = 30000;
             const time = Math.random() * minTime + minTime;
