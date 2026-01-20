@@ -448,4 +448,352 @@
             if(el.style.display === 'block') return; // Already spawned
 
             const app = document.getElementById('app');
-            const rect = app.
+            const rect = app.getBoundingClientRect();
+            
+            // Random position within the app container
+            const top = Math.random() * (rect.height - 100) + 50;
+            const left = Math.random() * (rect.width - 100) + 50;
+            
+            el.style.top = top + "px";
+            el.style.left = left + "px";
+            el.style.display = 'block';
+
+            // Disappear after 10 seconds
+            setTimeout(() => {
+                if(el.style.display === 'block') {
+                    el.style.display = 'none';
+                }
+            }, 10000);
+        }
+
+        function clickGoldenThread() {
+            const el = document.getElementById('golden-thread');
+            el.style.display = 'none';
+            const mps = getMPS();
+            // Bonus = 300 seconds (5 mins) of MPS, minimum 1000
+            const bonus = Math.max(1000, mps * 300);
+            
+            gameData.threads += bonus;
+            gameData.totalThreads += bonus;
+            gameData.lifetimeTotal += bonus;
+            showToast(`Golden Thread! +${format(bonus)}`);
+            updateUI();
+        }
+
+        /* --- THE C.A.T. --- */
+        function feedCat() {
+            if(gameData.threads < 1000000000) { showToast("The C.A.T. demands 1 Billion Threads."); return; }
+            if(!confirm("Sacrifice ALL Threads to the C.A.T.? (Resets Run, Gives Multiplier + Silk)")) return;
+
+            gameData.catLevel++;
+            gameData.silk += 100;
+            
+            const ach = gameData.achievements.find(a => a.id === 'a5');
+            if(!ach.unlocked) { ach.unlocked = true; showToast("🏆 Cat Servant"); }
+
+            resetRun();
+            const catTxt = document.getElementById('cat-text');
+            const lines = ["Meow.", "The yarn pleases me.", "More.", "The void purrs.", "Purr_fect.", "Data consumed."];
+            catTxt.innerText = lines[Math.floor(Math.random()*lines.length)];
+            showToast("The C.A.T. accepts your offering.");
+        }
+
+        /* --- DEV TOOLS & PUNISHMENT --- */
+        function checkDev() {
+            const inp = document.getElementById('dev-pwd').value.toLowerCase().trim();
+            if(inp === "developer") {
+                document.getElementById('dev-controls').style.display = 'block';
+                showToast("Dev Mode Active");
+                gameData.devAttempts = 0;
+            } else {
+                gameData.devAttempts++;
+                if(gameData.devAttempts >= 10 && gameData.devAttempts < 12) {
+                    document.getElementById('dev-warning').style.display = 'block';
+                }
+                if(gameData.devAttempts >= 12) {
+                    punishPlayer();
+                }
+            }
+        }
+
+        function punishPlayer() {
+            if(gameData.punished) return;
+            gameData.punished = true;
+            gameData.threads = 0;
+            gameData.devAttempts = 0;
+            setTheme('shame');
+            document.body.style.pointerEvents = "none";
+            setTimeout(() => { document.body.style.pointerEvents = "auto"; }, 2000);
+            alert("SYSTEM MESSAGE: You were warned. Resources wiped. Theme locked.");
+            const ach = gameData.achievements.find(a => a.id === 'a6');
+            if(!ach.unlocked) { ach.unlocked = true; showToast("🏆 Curiosity"); }
+        }
+
+        function devAddThreads() { gameData.threads += 1000000000; updateUI(); }
+        function devAddSilk() { gameData.silk += 100; updateUI(); }
+
+        /* --- UI UTILS --- */
+        function format(num) {
+            if(num < 1000) return Math.floor(num);
+            if(num < 1000000) return (num/1000).toFixed(2) + "k";
+            if(num < 1000000000) return (num/1000000).toFixed(2) + "M";
+            if(num < 1000000000000) return (num/1000000000).toFixed(2) + "B";
+            return (num/1000000000000).toFixed(2) + "T";
+        }
+
+        function showToast(msg) {
+            const con = document.getElementById('toast-container');
+            const el = document.createElement('div');
+            el.className = 'toast'; el.innerText = msg;
+            con.appendChild(el);
+            setTimeout(() => el.remove(), 4000);
+        }
+
+        function setTheme(name) {
+            if(gameData.punished && name !== 'shame') {
+                if(Date.now() - gameData.lastPunishTime > 60000) {
+                    gameData.punished = false; // Forgiven
+                } else {
+                    showToast("You are being punished. Wait it out.");
+                    return;
+                }
+            }
+            if(name === 'shame') gameData.lastPunishTime = Date.now();
+            if(name === 'golden') {
+                const completed = gameData.achievements.filter(a => a.unlocked).length;
+                const req = gameData.achievements.find(a=>a.id==='a7').req;
+                if(completed < req) { showToast(`Locked: Need ${req} Achievements`); return; }
+            }
+            document.body.setAttribute('data-theme', name);
+            gameData.theme = name;
+        }
+
+        function switchTab(id, btn) {
+            if(btn.classList.contains('locked')) {
+                // FAILSAFE: Force check if they actually have the threads now
+                if(gameData.lifetimeTotal >= 100000000) {
+                    btn.classList.remove('locked');
+                    switchTab(id, btn);
+                } else {
+                    const pct = Math.floor((gameData.lifetimeTotal / 100000000) * 100);
+                    showToast(`Locked. Progress: ${pct}% / 100%`);
+                }
+                return;
+            }
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function checkAchievements() {
+            gameData.achievements.forEach(a => {
+                if(!a.unlocked) {
+                    let u = false;
+                    if(a.type === 'total' && gameData.lifetimeTotal >= a.req) u = true;
+                    if(a.type === 'current' && gameData.threads >= a.req) u = true;
+                    if(a.type === 'silk' && gameData.silk >= a.req) u = true;
+                    if(a.type === 'cat' && gameData.catLevel >= a.req) u = true;
+                    if(a.type === 'punish' && gameData.punished) u = true;
+                    if(a.type === 'count' && gameData.achievements.filter(ach=>ach.unlocked).length >= a.req) u = true;
+                    if(a.type === 'mps' && getMPS() >= a.req) u = true;
+                    if(a.type === 'clicks' && gameData.clicks >= a.req) u = true;
+                    if(a.type === 'buildings' && gameData.generators.reduce((acc, v) => acc + v.count, 0) >= a.req) u = true;
+                    if(a.type === 'time') {
+                        const mins = (Date.now() - gameData.startTime) / 60000;
+                        if(mins >= a.req) u = true;
+                    }
+
+                    if(u) { a.unlocked = true; showToast(`🏆 ${a.name}`); updateUI(); }
+                }
+            });
+        }
+
+        /* --- EXPORT / IMPORT --- */
+        function exportSave() {
+            const str = btoa(JSON.stringify(gameData));
+            navigator.clipboard.writeText(str).then(() => showToast("Save Copied to Clipboard!"));
+        }
+
+        function importSave() {
+            const str = prompt("Paste your save code here:");
+            if(!str) return;
+            try {
+                const json = atob(str);
+                const data = JSON.parse(json);
+                localStorage.setItem('loomSaveV38', JSON.stringify(data));
+                location.reload();
+            } catch(e) {
+                alert("Invalid Save Code");
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('score').innerText = format(gameData.threads);
+            document.getElementById('mps').innerText = format(getMPS()) + " / sec";
+            document.getElementById('silk-score').innerText = gameData.silk;
+            
+            // STATS
+            document.getElementById('stat-lifetime').innerText = format(gameData.lifetimeTotal);
+            document.getElementById('stat-clicks').innerText = gameData.clicks;
+            const mins = Math.floor((Date.now() - gameData.startTime) / 60000);
+            document.getElementById('stat-time').innerText = mins + "m";
+            const catPct = Math.min(100, Math.floor((gameData.lifetimeTotal / 100000000) * 100));
+            document.getElementById('stat-cat-prog').innerText = catPct + "%";
+
+            // PRESTIGE LOGIC
+            let pending = 0;
+            const voidBtn = document.getElementById('void-btn');
+            const voidWarn = document.getElementById('void-warning');
+            
+            if(gameData.totalThreads >= 1000000) {
+                pending = Math.floor(Math.sqrt(gameData.totalThreads / 1000000));
+                voidBtn.disabled = false;
+                voidBtn.classList.add('glow-btn'); // Add glow
+                voidBtn.style.opacity = 1;
+                voidWarn.style.display = 'none';
+            } else {
+                voidBtn.disabled = true;
+                voidBtn.classList.remove('glow-btn');
+                voidBtn.style.opacity = 0.5;
+                voidWarn.style.display = 'block';
+            }
+            document.getElementById('pending-silk').innerText = pending;
+
+            if(gameData.silk > 0 || gameData.lifetimeTotal > 1000000) document.getElementById('silk-ui').style.display = 'block';
+
+            // CAT TAB LOCK LOGIC
+            const catBtn = document.getElementById('nav-cat');
+            if(gameData.lifetimeTotal < 100000000) {
+                catBtn.classList.add('locked');
+                catBtn.title = `Requires 100M Lifetime Threads (${catPct}%)`;
+            } else {
+                catBtn.classList.remove('locked');
+                catBtn.title = "The Entity Awaits";
+            }
+
+            // Cat Internal UI
+            document.getElementById('cat-level-display').innerText = gameData.catLevel;
+            document.getElementById('cat-bonus-display').innerText = (1 + gameData.catLevel) + "x";
+            const catBtnMain = document.getElementById('cat-btn');
+            if(gameData.threads >= 1000000000) catBtnMain.disabled = false; else catBtnMain.disabled = true;
+
+            // Generators
+            const gList = document.getElementById('generators-list');
+            gList.innerHTML = "";
+            gameData.generators.forEach(g => {
+                const cost = getCost(g.baseCost, g.count, buyAmount);
+                const can = gameData.threads >= cost;
+                gList.innerHTML += `<div class="card ${can?'':'disabled'}" onclick="buyGenerator(${g.id})">
+                    <div class="card-info"><h4>${g.name}</h4></div>
+                    <div class="card-meta"><div class="card-count">${g.count}</div><div class="card-cost">${format(cost)}</div></div></div>`;
+            });
+
+            // Upgrades
+            const uList = document.getElementById('upgrades-list');
+            uList.innerHTML = "";
+            let anyUpg = false;
+            gameData.upgrades.forEach(u => {
+                if(!u.bought) {
+                    anyUpg = true;
+                    const can = gameData.threads >= u.cost;
+                    uList.innerHTML += `<div class="card ${can?'':'disabled'}" onclick="buyUpgrade(${u.id})">
+                        <div class="card-info"><h4>${u.name}</h4><p>${u.desc}</p></div><div class="card-meta"><div class="card-cost">${format(u.cost)}</div></div></div>`;
+                }
+            });
+            if(!anyUpg) uList.innerHTML = "<div style='text-align:center; opacity:0.5;'>Research complete.</div>";
+
+            // Silk Upgrades
+            const sList = document.getElementById('silk-upgrades-list');
+            sList.innerHTML = "";
+            gameData.silkUpgrades.forEach(u => {
+                if(!u.bought) {
+                    const can = gameData.silk >= u.cost;
+                    sList.innerHTML += `<div class="card ${can?'':'disabled'}" onclick="buySilkUpgrade(${u.id})" style="border-color:#d8bfd8;">
+                        <div class="card-info"><h4 style="color:#d8bfd8">${u.name}</h4><p>${u.desc}</p></div><div class="card-meta"><div class="card-cost" style="color:#d8bfd8">${u.cost} Silk</div></div></div>`;
+                } else sList.innerHTML += `<div class="card disabled" style="border-color:#555;"><div class="card-info"><h4 style="color:#777">${u.name} (Acquired)</h4></div></div>`;
+            });
+
+            // Achievements
+            const aList = document.getElementById('achievements-list');
+            aList.innerHTML = "";
+            gameData.achievements.forEach(a => {
+                aList.innerHTML += `<div style="border-bottom:1px solid #333; padding:5px; ${a.unlocked?"color:var(--high); font-weight:bold;":"opacity:0.5;"}">
+                    ${a.unlocked?"✔":"🔒"} ${a.name} ${a.unlocked ? `<span class='reward-badge'>${a.reward}</span>` : ''}
+                    <div style="font-size:0.7rem; opacity:0.8; margin-left:20px;">Reward: ${a.rewardDesc}</div>
+                </div>`;
+            });
+
+            // Golden Theme Lock
+            const gBtn = document.getElementById('theme-btn-golden');
+            const completedAch = gameData.achievements.filter(a => a.unlocked).length;
+            const req = gameData.achievements.find(a=>a.id==='a7').req;
+            if(completedAch < req) gBtn.classList.add('locked'); else gBtn.classList.remove('locked');
+        }
+
+        /* --- SAVE SYSTEM --- */
+        function saveGame() {
+            localStorage.setItem('loomSaveV38', JSON.stringify(gameData));
+        }
+
+        function loadGame() {
+            // Try load v3.8, if not v3.7, if not v3.6
+            let save = JSON.parse(localStorage.getItem('loomSaveV38'));
+            if(!save) save = JSON.parse(localStorage.getItem('loomSaveV37'));
+            if(!save) save = JSON.parse(localStorage.getItem('loomSaveV36'));
+            
+            if(save) {
+                if(save.threads !== undefined) gameData.threads = save.threads;
+                if(save.totalThreads !== undefined) gameData.totalThreads = save.totalThreads;
+                if(save.lifetimeTotal !== undefined) gameData.lifetimeTotal = save.lifetimeTotal;
+                if(save.silk !== undefined) gameData.silk = save.silk;
+                if(save.clicks !== undefined) gameData.clicks = save.clicks;
+                if(save.startTime) gameData.startTime = save.startTime;
+                if(save.theme) setTheme(save.theme);
+                if(save.catLevel) gameData.catLevel = save.catLevel;
+                if(save.punished) gameData.punished = save.punished;
+                
+                // Merge Arrays (Safe method for updates)
+                if(save.generators) save.generators.forEach((g,i) => { if(gameData.generators[i]) gameData.generators[i].count = g.count; });
+                if(save.upgrades) save.upgrades.forEach((u,i) => { if(gameData.upgrades[i]) gameData.upgrades[i].bought = u.bought; });
+                if(save.silkUpgrades) save.silkUpgrades.forEach((u,i) => { if(gameData.silkUpgrades[i]) gameData.silkUpgrades[i].bought = u.bought; });
+                if(save.achievements) save.achievements.forEach((a,i) => { if(gameData.achievements[i]) gameData.achievements[i].unlocked = a.unlocked; });
+            }
+        }
+
+        function hardReset() { if(confirm("Wipe EVERYTHING?")) { localStorage.removeItem('loomSaveV38'); location.reload(); } }
+
+        /* --- LOOPS --- */
+        setInterval(() => {
+            const mps = getMPS();
+            if(mps > 0) {
+                const tick = mps / 10;
+                gameData.threads += tick;
+                gameData.totalThreads += tick;
+                gameData.lifetimeTotal += tick;
+            }
+            checkAchievements();
+            updateUI();
+        }, 100);
+
+        setInterval(() => { saveGame(); }, 30000);
+        setInterval(() => { 
+            const el = document.getElementById('ticker'); 
+            el.innerText = tickerMessages[Math.floor(Math.random()*tickerMessages.length)];
+        }, 15000);
+        
+        // Golden Thread Spawner (60-120 seconds)
+        function scheduleGoldenThread() {
+            const time = Math.random() * 60000 + 60000;
+            setTimeout(() => {
+                spawnGoldenThread();
+                scheduleGoldenThread();
+            }, time);
+        }
+
+        loadGame();
+        updateUI();
+        scheduleGoldenThread();
+    </script>
+</body>
+</html>
