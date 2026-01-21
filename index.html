@@ -3,135 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Loom v6.0: Expansion</title>
+    <title>The Loom v6.1: Restored</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧶</text></svg>">
 
     <style>
         :root { --transition: all 0.2s ease; }
 
-        /* --- THEMES --- */
-        [data-theme="standard"] { --bg: #1e1e1e; --panel: #252526; --text: #d4d4d4; --high: #4fc1ff; --acc: #ce9178; --bord: #3e3e42; --font: 'Segoe UI', sans-serif; --btn: #333; }
-        [data-theme="blueprint"] { --bg: #2b506e; --panel: #36648b; --text: #e0f0ff; --high: #fff; --acc: #aaddff; --bord: #5c8aae; --font: 'Courier New', monospace; --btn: #4682b4; }
-        [data-theme="midnight"] { --bg: #0f172a; --panel: #1e293b; --text: #e2e8f0; --high: #818cf8; --acc: #38bdf8; --bord: #334155; --font: 'Verdana', sans-serif; --btn: #1e293b; }
-        [data-theme="golden"] { --bg: #2c241b; --panel: #4a3b2a; --text: #fff8e1; --high: #ffd700; --acc: #ffecb3; --bord: #8a6e45; --font: 'Georgia', serif; --btn: #5c4d35; }
-        [data-theme="nebula"] { --bg: #120b29; --panel: #241645; --text: #e0ccff; --high: #00ffff; --acc: #ff00ff; --bord: #482c8a; --font: 'Trebuchet MS', sans-serif; --btn: #351c6e; }
-
+        /* --- RESTORED THEMES (Cleaner Colors) --- */
+        [data-theme="standard"] { --bg: #1a1a1a; --panel: #222; --text: #eee; --high: #fff; --acc: #888; --bord: #333; --font: 'Segoe UI', sans-serif; --btn: #1a1a1a; --highlight-color: #d8bfd8; }
+        [data-theme="blueprint"] { --bg: #2b506e; --panel: #36648b; --text: #e0f0ff; --high: #fff; --acc: #aaddff; --bord: #5c8aae; --font: 'Courier New', monospace; --btn: #4682b4; --highlight-color: #aaddff; }
+        
         body {
             background-color: var(--bg); color: var(--text); font-family: var(--font);
             margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
             transition: var(--transition); user-select: none;
         }
 
-        /* --- LAYOUT --- */
-        #ticker-wrap { background: var(--panel); border-bottom: 1px solid var(--bord); height: 35px; overflow: hidden; display: flex; align-items: center; font-size: 0.9rem; flex-shrink: 0; }
-        #ticker { display: inline-block; padding-left: 100%; animation: scroll 60s linear infinite; color: var(--high); font-weight: bold; white-space: nowrap; }
+        /* --- LAYOUT RESTORATION --- */
+        #ticker-wrap { background: var(--panel); border-bottom: 1px solid var(--bord); height: 30px; display: flex; align-items: center; font-size: 0.8rem; flex-shrink: 0; opacity: 0.7; }
+        #ticker { display: inline-block; padding-left: 100%; animation: scroll 45s linear infinite; color: var(--high); white-space: nowrap; }
         @keyframes scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        #app { display: grid; grid-template-rows: auto 1fr auto; height: 100%; max-width: 900px; margin: 0 auto; width: 100%; border-left: 1px solid var(--bord); border-right: 1px solid var(--bord); background: var(--bg); position: relative; }
+        #app { display: grid; grid-template-rows: auto 1fr auto; height: 100%; max-width: 800px; margin: 0 auto; width: 100%; border-left: 1px solid var(--bord); border-right: 1px solid var(--bord); background: var(--bg); position: relative; }
 
-        header { padding: 15px; text-align: center; border-bottom: 1px solid var(--bord); }
-        .currency-display { font-size: 2.2rem; color: var(--high); font-weight: bold; line-height: 1; margin: 5px 0; }
-        .sub-currencies { display: flex; justify-content: center; gap: 15px; font-size: 0.85rem; font-weight: bold; margin-top: 5px; }
-        .res-silk { color: #d8bfd8; }
-        .res-red { color: #ff6b6b; }
-        .res-blue { color: #4fc1ff; }
-        .res-green { color: #6bff84; }
+        /* Cleaner Header - No clutter */
+        header { padding: 25px; text-align: center; border-bottom: 1px solid var(--bord); background: var(--bg); }
+        .currency-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; margin-bottom: 5px; }
+        .currency-display { font-size: 3rem; color: var(--high); font-weight: 300; line-height: 1; margin: 0; font-variant-numeric: tabular-nums; }
+        .mps-display { font-size: 0.9rem; color: var(--acc); margin-top: 8px; font-variant-numeric: tabular-nums; }
         
-        .tab-content { overflow-y: auto; padding: 15px; display: none; height: 100%; box-sizing: border-box; }
-        .tab-content.active { display: block; }
+        .tab-content { overflow-y: auto; padding: 20px; display: none; height: 100%; box-sizing: border-box; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- NAVIGATION --- */
-        nav { display: flex; border-top: 1px solid var(--bord); background: var(--panel); overflow-x: auto; }
-        .nav-btn { flex: 1; min-width: 70px; padding: 15px 5px; background: none; border: none; color: var(--text); font-family: var(--font); font-weight: bold; cursor: pointer; opacity: 0.6; text-transform: uppercase; border-right: 1px solid var(--bord); transition: all 0.3s; font-size: 0.75rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
-        .nav-btn:hover { opacity: 1; background: rgba(255,255,255,0.05); }
-        .nav-btn.active { opacity: 1; color: var(--high); border-top: 3px solid var(--high); background: var(--bg); }
-        .nav-btn.special { color: #d8bfd8; } 
-        .nav-btn.locked { opacity: 0.3; pointer-events: none; filter: grayscale(1); background: #1a1a1a; }
+        /* Cleaner Nav - Text based again */
+        nav { display: flex; border-top: 1px solid var(--bord); background: var(--panel); overflow-x: auto; scrollbar-width: none; }
+        nav::-webkit-scrollbar { display: none; }
+        .nav-btn { flex: 1; min-width: 80px; padding: 15px; background: none; border: none; color: var(--text); font-family: var(--font); cursor: pointer; opacity: 0.5; text-transform: uppercase; border-right: 1px solid var(--bord); font-size: 0.75rem; letter-spacing: 1px; transition: all 0.2s; }
+        .nav-btn:hover { opacity: 1; background: rgba(255,255,255,0.03); }
+        .nav-btn.active { opacity: 1; color: var(--high); background: var(--bg); border-top: 3px solid var(--highlight-color); font-weight: bold; }
+        .nav-btn.locked { opacity: 0.2; pointer-events: none; }
 
-        /* --- GENERAL UI --- */
-        .main-btn { width: 100%; padding: 15px; font-size: 1rem; background: var(--btn); color: var(--high); border: 2px solid var(--high); border-radius: 6px; cursor: pointer; font-family: var(--font); font-weight: bold; box-shadow: 0 4px 0 var(--bord); transition: transform 0.1s; margin-bottom: 15px; }
-        .main-btn:active { transform: translateY(4px); box-shadow: none; }
-        .main-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(1); }
+        /* --- UI COMPONENTS --- */
+        .main-btn { width: 100%; padding: 20px; font-size: 1.1rem; background: transparent; color: var(--high); border: 1px solid var(--bord); border-radius: 4px; cursor: pointer; font-family: var(--font); transition: all 0.1s; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
+        .main-btn:hover { border-color: var(--high); background: rgba(255,255,255,0.02); }
+        .main-btn:active { transform: scale(0.99); }
+        .main-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; border-color: var(--bord); }
 
-        .card { background: var(--panel); border: 1px solid var(--bord); padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; }
-        .card:hover { border-color: var(--high); }
-        .card.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
-        .card-info h4 { margin: 0; color: var(--text); }
-        .card-info p { margin: 3px 0 0; font-size: 0.75rem; opacity: 0.7; }
+        .section-header { border-bottom: 1px solid var(--bord); padding-bottom: 10px; margin-bottom: 15px; color: var(--highlight-color); font-weight: normal; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Generator Cards - Restored to clean look */
+        .card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--bord); cursor: pointer; transition: background 0.2s; }
+        .card:first-child { border-top: 1px solid var(--bord); }
+        .card:hover { background: rgba(255,255,255,0.03); }
+        .card.disabled { opacity: 0.4; pointer-events: none; }
+        .card-info h4 { margin: 0; font-weight: normal; font-size: 1rem; color: var(--text); }
+        .card-info p { margin: 4px 0 0; font-size: 0.8rem; color: var(--acc); }
         .card-meta { text-align: right; }
-        .card-cost { color: var(--acc); font-weight: bold; font-size: 0.85rem; }
-        .card-count { font-size: 1.1rem; color: var(--high); font-weight: bold; }
+        .card-cost { color: var(--acc); font-size: 0.85rem; }
+        .card-count { font-size: 1.2rem; color: var(--high); margin-bottom: 2px; }
 
-        .buy-controls { display: flex; justify-content: flex-end; margin-bottom: 10px; gap: 5px; }
-        .buy-toggle { padding: 4px 8px; font-size: 0.75rem; background: var(--panel); border: 1px solid var(--bord); color: var(--text); cursor: pointer; }
-        .buy-toggle.active { background: var(--high); color: var(--bg); border-color: var(--high); font-weight: bold; }
+        .buy-controls { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
+        .buy-toggle { background: transparent; border: 1px solid var(--bord); color: var(--acc); padding: 5px 15px; cursor: pointer; border-radius: 20px; font-size: 0.8rem; }
+        .buy-toggle.active { border-color: var(--high); color: var(--high); background: rgba(255,255,255,0.05); }
 
-        /* --- ARTIFACTS (VAULT) --- */
-        .artifact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-        .artifact-slot { background: rgba(0,0,0,0.3); border: 1px solid var(--bord); padding: 10px; border-radius: 5px; text-align: center; cursor: pointer; position: relative; height: 120px; display: flex; flex-direction: column; justify-content: space-between; }
-        .artifact-slot:hover { border-color: var(--high); background: rgba(255,255,255,0.05); }
-        .artifact-slot.equipped { border: 2px solid #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
-        .art-icon { font-size: 2rem; margin-bottom: 5px; }
-        .art-name { font-size: 0.8rem; font-weight: bold; color: var(--high); }
-        .art-desc { font-size: 0.65rem; color: #aaa; line-height: 1.2; }
-        .art-badge { position: absolute; top: 5px; right: 5px; font-size: 0.6rem; background: #ffd700; color: #000; padding: 2px 4px; border-radius: 3px; font-weight: bold; display: none; }
-        .artifact-slot.equipped .art-badge { display: block; }
-        .empty-slot { display: flex; align-items: center; justify-content: center; opacity: 0.3; font-style: italic; font-size: 0.8rem; }
+        /* --- ARTIFACTS (Cleaner Grid) --- */
+        .artifact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .artifact-slot { border: 1px solid var(--bord); padding: 15px; border-radius: 4px; text-align: left; cursor: pointer; position: relative; min-height: 80px; display: flex; align-items: center; gap: 10px; transition: border 0.2s; }
+        .artifact-slot:hover { border-color: var(--high); }
+        .artifact-slot.equipped { border-color: #ffd700; background: rgba(255, 215, 0, 0.05); }
+        .art-icon { font-size: 1.5rem; }
+        .art-info div { font-size: 0.9rem; font-weight: bold; color: var(--text); }
+        .art-info span { font-size: 0.75rem; color: var(--acc); display: block; }
+        .art-status { position: absolute; top: 5px; right: 5px; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: #ffd700; display: none; }
+        .artifact-slot.equipped .art-status { display: block; }
 
-        /* --- DYE VAT --- */
-        .vat-container { display: flex; flex-direction: column; gap: 15px; }
-        .dye-row { display: flex; align-items: center; background: var(--panel); padding: 15px; border-radius: 8px; border: 1px solid var(--bord); }
-        .dye-icon { font-size: 2.5rem; width: 60px; text-align: center; margin-right: 15px; }
-        .dye-info { flex: 1; }
-        .dye-info h4 { margin: 0; font-size: 1.1rem; }
-        .dye-info p { margin: 5px 0 0; font-size: 0.8rem; opacity: 0.8; }
-        .dye-actions { text-align: right; min-width: 100px; }
-        .dye-amt { font-size: 1.5rem; font-weight: bold; }
-        .dye-btn { display: block; width: 100%; margin-top: 5px; padding: 5px; cursor: pointer; background: rgba(0,0,0,0.2); border: 1px solid var(--bord); color: var(--text); border-radius: 4px; font-size: 0.8rem;}
+        /* --- DYE VAT (Table style) --- */
+        .vat-display { display: flex; justify-content: space-around; padding: 20px; background: rgba(255,255,255,0.02); margin-bottom: 20px; border-radius: 4px; }
+        .vat-col { text-align: center; }
+        .vat-val { font-size: 1.5rem; font-weight: bold; }
+        .vat-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; }
         
-        /* --- MONOLITH (CHALLENGES) --- */
-        .mono-header { text-align: center; padding: 20px; background: #000; border: 1px solid #333; margin-bottom: 20px; border-radius: 8px; }
-        .challenge-card { background: #111; border: 1px solid #333; padding: 15px; margin-bottom: 10px; border-left: 4px solid #555; position: relative; opacity: 0.8; }
-        .challenge-card:hover { opacity: 1; border-color: #666; }
-        .challenge-card.active { border-color: #ff4444; border-left-color: #ff4444; background: #1a0505; opacity: 1; }
-        .challenge-card.completed { border-left-color: #00ff00; }
-        .chal-title { font-weight: bold; color: #fff; font-size: 1rem; }
-        .chal-desc { font-size: 0.8rem; color: #aaa; margin: 5px 0; }
-        .chal-reward { font-size: 0.75rem; color: var(--high); margin-top: 5px; font-weight: bold; }
-        .chal-status { position: absolute; top: 15px; right: 15px; font-weight: bold; font-size: 0.8rem; }
+        .dye-list { display: flex; flex-direction: column; gap: 10px; }
+        .dye-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--bord); }
+        .dye-btn { background: transparent; border: 1px solid var(--bord); color: var(--text); padding: 8px 15px; cursor: pointer; font-size: 0.8rem; min-width: 100px; }
+        .dye-btn:hover { border-color: var(--high); }
 
-        /* --- MISC --- */
+        /* --- MONOLITH --- */
+        .challenge-card { border: 1px solid var(--bord); padding: 15px; margin-bottom: 15px; opacity: 0.7; transition: opacity 0.2s; }
+        .challenge-card:hover { opacity: 1; border-color: var(--acc); }
+        .challenge-card.active { border-color: #ff4444; opacity: 1; border-left: 4px solid #ff4444; }
+        .challenge-card.completed { border-left: 4px solid #44ff44; opacity: 0.5; }
+
+        /* --- UTILS --- */
+        #toast-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); pointer-events: none; z-index: 100; text-align: center; width: 100%; }
+        .toast { display: inline-block; background: var(--high); color: var(--bg); padding: 8px 16px; margin-top: 5px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; animation: fadeUp 3s forwards; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(10px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
+
+        /* Golden Thread */
         #golden-thread {
-            position: absolute; width: 30px; height: 30px; border-radius: 50%;
-            background: radial-gradient(circle, #ffd700, #b8860b);
-            box-shadow: 0 0 15px #ffd700; cursor: pointer; z-index: 999;
-            display: none; animation: float 3s ease-in-out infinite;
+            position: absolute; width: 20px; height: 20px; border-radius: 50%;
+            background: #ffd700; box-shadow: 0 0 10px #ffd700; cursor: pointer; z-index: 999;
+            display: none; animation: pulse 2s infinite;
         }
-        @keyframes float { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        
-        #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); pointer-events: none; z-index: 100; }
-        .toast { background: var(--high); color: var(--bg); padding: 10px 20px; margin-top: 5px; border-radius: 4px; text-align: center; font-weight: bold; animation: slideUp 0.5s ease, fadeOut 0.5s 3s forwards; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .toast.rare { background: linear-gradient(45deg, #ffd700, #ffa500); color: #000; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; } }
-
-        /* System & Tree styles inherited from v5 but condensed */
-        .tree-container { display: flex; flex-direction: column; align-items: center; padding-bottom: 50px; }
-        .tree-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; position: relative; width: 100%; }
-        .tree-node { width: 80px; height: 80px; border-radius: 12px; border: 2px solid var(--bord); background: var(--panel); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; text-align: center; font-size: 0.75rem; padding: 2px; }
-        .tree-node.bought { background: #d8bfd8; color: #220022; border-color: #fff; }
-        .tree-node.locked { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
-        
-        .active-challenge-banner { background: #ff4444; color: white; text-align: center; padding: 5px; font-weight: bold; font-size: 0.8rem; display: none; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
     </style>
 </head>
 <body data-theme="standard">
 
     <div id="ticker-wrap">
-        <div id="ticker">System initialized... Weaving reality...</div>
+        <div id="ticker">System initialized... Reality restored...</div>
     </div>
-    <div class="active-challenge-banner" id="chal-banner">⚠ CHALLENGE ACTIVE: RESTRICTIONS APPLIED ⚠</div>
     
     <div id="golden-thread" onclick="clickGoldenThread()"></div>
 
@@ -139,159 +122,149 @@
         <header>
             <div class="currency-label">Universal Threads</div>
             <div class="currency-display" id="score">0</div>
-            <div class="mps-display" id="mps">0.0 per second</div>
-            <div class="sub-currencies">
-                <span class="res-silk" id="ui-silk" style="display:none">✧ <span id="val-silk">0</span> Silk</span>
-                <span class="res-red" id="ui-red" style="display:none">♦ <span id="val-red">0</span> Red</span>
-                <span class="res-blue" id="ui-blue" style="display:none">♦ <span id="val-blue">0</span> Blue</span>
-                <span class="res-green" id="ui-green" style="display:none">♦ <span id="val-green">0</span> Green</span>
-            </div>
+            <div class="mps-display" id="mps">0.0 / sec</div>
         </header>
 
         <div id="tab-weave" class="tab-content active">
-            <button class="main-btn" id="stitch-btn" onclick="clickAction()">WEAVE FABRIC</button>
+            <button class="main-btn" onclick="clickAction()">Weave Fabric</button>
+            
             <div class="buy-controls">
-                <button class="buy-toggle active" id="btn-x1" onclick="setBuyAmount(1)">x1</button>
-                <button class="buy-toggle" id="btn-x10" onclick="setBuyAmount(10)">x10</button>
-                <button class="buy-toggle" id="btn-x100" onclick="setBuyAmount(100)">x100</button>
+                <button class="buy-toggle active" id="btn-x1" onclick="setBuyAmount(1)">1</button>
+                <button class="buy-toggle" id="btn-x10" onclick="setBuyAmount(10)">10</button>
+                <button class="buy-toggle" id="btn-x100" onclick="setBuyAmount(100)">100</button>
             </div>
+
             <div id="generators-list"></div>
         </div>
 
+        <div id="tab-research" class="tab-content">
+            <h3 class="section-header">Research</h3>
+            <div id="upgrades-list"></div>
+        </div>
+
         <div id="tab-vault" class="tab-content">
-            <h3 style="color:var(--high); border-bottom:1px solid var(--bord);">Artifact Vault</h3>
-            <p style="font-size:0.8rem; opacity:0.7;">Rare items found while weaving. Click to equip (Max 2).</p>
+            <h3 class="section-header">Artifact Vault <span style="font-size:0.8rem; opacity:0.5" id="art-count">0/8</span></h3>
             <div class="artifact-grid" id="artifact-list">
-                <div class="empty-slot">Find items by playing...</div>
+                <div style="grid-column: span 2; text-align: center; padding: 40px; opacity: 0.5; font-style: italic;">
+                    Artifacts are found randomly while weaving...
+                </div>
             </div>
         </div>
 
         <div id="tab-dye" class="tab-content">
-            <div class="vat-container">
-                <div class="dye-row">
-                    <div class="dye-icon" style="color:#ff6b6b">♦</div>
-                    <div class="dye-info">
-                        <h4 style="color:#ff6b6b">Red Dye (Efficiency)</h4>
-                        <p>Boils threads into raw speed. Increases Global MPS.</p>
-                        <p style="font-size:0.8rem; color:#fff;">Effect: +<span id="eff-red">0</span>% MPS</p>
-                    </div>
-                    <div class="dye-actions">
-                        <div class="dye-amt" style="color:#ff6b6b" id="dye-red-amt">0</div>
-                        <button class="dye-btn" onclick="buyDye('red')">Buy (+10k Cost)</button>
-                    </div>
+            <h3 class="section-header">The Dye Vat</h3>
+            
+            <div class="vat-display">
+                <div class="vat-col" style="color:#ff6b6b">
+                    <div class="vat-val" id="val-red">0</div>
+                    <div class="vat-label">Red (Speed)</div>
                 </div>
-                <div class="dye-row">
-                    <div class="dye-icon" style="color:#4fc1ff">♦</div>
-                    <div class="dye-info">
-                        <h4 style="color:#4fc1ff">Blue Dye (Fluidity)</h4>
-                        <p>Lubricates the loom. Reduces all building costs.</p>
-                        <p style="font-size:0.8rem; color:#fff;">Effect: -<span id="eff-blue">0</span>% Costs</p>
-                    </div>
-                    <div class="dye-actions">
-                        <div class="dye-amt" style="color:#4fc1ff" id="dye-blue-amt">0</div>
-                        <button class="dye-btn" onclick="buyDye('blue')">Buy (+10k Cost)</button>
-                    </div>
+                <div class="vat-col" style="color:#4fc1ff">
+                    <div class="vat-val" id="val-blue">0</div>
+                    <div class="vat-label">Blue (Cost)</div>
                 </div>
-                <div class="dye-row">
-                    <div class="dye-icon" style="color:#6bff84">♦</div>
-                    <div class="dye-info">
-                        <h4 style="color:#6bff84">Green Dye (Fortune)</h4>
-                        <p>Attracts anomalies. Increases Artifact/Golden Thread chance.</p>
-                        <p style="font-size:0.8rem; color:#fff;">Effect: +<span id="eff-green">0</span>% Luck</p>
-                    </div>
-                    <div class="dye-actions">
-                        <div class="dye-amt" style="color:#6bff84" id="dye-green-amt">0</div>
-                        <button class="dye-btn" onclick="buyDye('green')">Buy (+10k Cost)</button>
-                    </div>
+                <div class="vat-col" style="color:#6bff84">
+                    <div class="vat-val" id="val-green">0</div>
+                    <div class="vat-label">Green (Luck)</div>
                 </div>
             </div>
-        </div>
 
-        <div id="tab-research" class="tab-content">
-            <h3 style="color:var(--high);">Pattern Research</h3>
-            <div id="upgrades-list"></div>
+            <div class="dye-list">
+                <div class="dye-item">
+                    <div>
+                        <div style="color:#ff6b6b; font-weight:bold;">Red Dye</div>
+                        <div style="font-size:0.8rem; opacity:0.7">Boil threads for efficiency (+10% MPS)</div>
+                    </div>
+                    <button class="dye-btn" onclick="buyDye('red')">Mix</button>
+                </div>
+                <div class="dye-item">
+                    <div>
+                        <div style="color:#4fc1ff; font-weight:bold;">Blue Dye</div>
+                        <div style="font-size:0.8rem; opacity:0.7">Lubricate the loom (-Cost)</div>
+                    </div>
+                    <button class="dye-btn" onclick="buyDye('blue')">Mix</button>
+                </div>
+                <div class="dye-item">
+                    <div>
+                        <div style="color:#6bff84; font-weight:bold;">Green Dye</div>
+                        <div style="font-size:0.8rem; opacity:0.7">Attract anomalies (+Luck)</div>
+                    </div>
+                    <button class="dye-btn" onclick="buyDye('green')">Mix</button>
+                </div>
+            </div>
         </div>
 
         <div id="tab-tapestry" class="tab-content">
-            <div class="prestige-header" style="text-align:center; border-bottom:1px solid var(--bord); padding-bottom:10px; margin-bottom:20px;">
-                <h3 style="color:#d8bfd8; margin:0;">THE TAPESTRY</h3>
-                <div style="font-size:0.9rem;">Available Silk: <span id="tree-silk" style="color:#d8bfd8; font-weight:bold;">0</span></div>
-                <button id="void-btn" class="main-btn" style="padding:10px; font-size:0.9rem; margin-top:10px; border-color:#d8bfd8; color:#d8bfd8;" onclick="prestige()">UNRAVEL (RESET)</button>
-                <div id="pending-msg" style="font-size:0.8rem;">Pending: <span id="pending-silk">0</span> Silk</div>
+            <h3 class="section-header">The Tapestry <span style="font-size:0.8rem; color:#d8bfd8" id="tree-silk">0 Silk</span></h3>
+            <div style="text-align:center; margin-bottom:20px; font-size:0.9rem; opacity:0.7;">
+                Prestige Pending: <span id="pending-silk" style="color:#fff; font-weight:bold;">0</span> Silk
             </div>
-            <div class="tree-container" id="skill-tree"></div>
+            <button class="main-btn" id="void-btn" onclick="prestige()" style="border-color:#d8bfd8; color:#d8bfd8">Unravel Reality (Reset)</button>
+            <div class="tree-container" id="skill-tree" style="margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:20px;"></div>
         </div>
 
         <div id="tab-monolith" class="tab-content">
-            <div class="mono-header">
-                <h2 style="margin:0; color:#fff;">THE MONOLITH</h2>
-                <p style="font-size:0.8rem; color:#888;">Enter simulations. Endure restrictions. Claim Runes.</p>
-                <button class="main-btn" id="exit-chal-btn" style="background:#300; border-color:red; color:red; display:none;" onclick="exitChallenge()">ABORT SIMULATION</button>
+            <h3 class="section-header">The Monolith</h3>
+            <p style="font-size:0.8rem; opacity:0.7; margin-bottom:20px;">Enter simulations with strict rules to unlock permanent Runes.</p>
+            <div id="active-chal-ui" style="display:none; padding:15px; border:1px solid #ff4444; color:#ff4444; text-align:center; margin-bottom:20px;">
+                <strong>⚠ SIMULATION ACTIVE ⚠</strong><br>
+                <button class="dye-btn" onclick="exitChallenge()" style="margin-top:10px; border-color:#ff4444; color:#ff4444;">ABORT</button>
             </div>
             <div id="challenge-list"></div>
         </div>
 
         <div id="tab-settings" class="tab-content">
-            <h3 style="color:var(--high)">System</h3>
-            <div style="display:flex; gap:5px; margin-bottom:20px;">
-                <button class="dye-btn" onclick="saveGame(); showToast('Saved')">Save</button>
-                <button class="dye-btn" onclick="exportSave()">Export</button>
-                <button class="dye-btn" onclick="importSave()">Import</button>
-                <button class="dye-btn" onclick="hardReset()" style="color:red; border-color:red;">Wipe</button>
-            </div>
-            <div id="stats-area" style="font-size:0.85rem; opacity:0.8; line-height:1.6;"></div>
-            <h4 style="margin-top:20px;">Themes</h4>
-            <div style="display:flex; flex-wrap:wrap; gap:5px;">
+            <h3 class="section-header">System</h3>
+            <button class="main-btn" onclick="saveGame(); showToast('Saved')">Save Data</button>
+            <button class="main-btn" onclick="hardReset()" style="border-color:#ff4444; color:#ff4444;">Wipe Data</button>
+            
+            <h3 class="section-header" style="margin-top:30px;">Themes</h3>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="buy-toggle" onclick="setTheme('standard')">Standard</button>
                 <button class="buy-toggle" onclick="setTheme('blueprint')">Blueprint</button>
-                <button class="buy-toggle" onclick="setTheme('midnight')">Midnight</button>
-                <button class="buy-toggle" onclick="setTheme('golden')">Golden</button>
-                <button class="buy-toggle" onclick="setTheme('nebula')">Nebula</button>
             </div>
+            
+            <div id="stats-area" style="margin-top:30px; font-size:0.8rem; opacity:0.5; font-family:monospace;"></div>
         </div>
 
         <nav>
-            <button class="nav-btn active" onclick="switchTab('weave', this)"><span>🧶</span>Weave</button>
-            <button class="nav-btn" onclick="switchTab('vault', this)"><span>🎒</span>Vault</button>
-            <button class="nav-btn locked" id="nav-dye" onclick="switchTab('dye', this)"><span>⚗️</span>Vat</button>
-            <button class="nav-btn" onclick="switchTab('research', this)"><span>🔬</span>Rsrch</button>
-            <button class="nav-btn special" onclick="switchTab('tapestry', this)"><span>✨</span>Tree</button>
-            <button class="nav-btn locked" id="nav-mono" onclick="switchTab('monolith', this)"><span>🗿</span>Mono</button>
-            <button class="nav-btn" onclick="switchTab('settings', this)"><span>⚙️</span>Sys</button>
+            <button class="nav-btn active" onclick="switchTab('weave', this)">Weave</button>
+            <button class="nav-btn" onclick="switchTab('research', this)">Research</button>
+            <button class="nav-btn" onclick="switchTab('vault', this)">Vault</button>
+            <button class="nav-btn locked" id="nav-dye" onclick="switchTab('dye', this)">Vat</button>
+            <button class="nav-btn locked" id="nav-tree" onclick="switchTab('tapestry', this)">Tree</button>
+            <button class="nav-btn locked" id="nav-mono" onclick="switchTab('monolith', this)">Mono</button>
+            <button class="nav-btn" onclick="switchTab('settings', this)">Sys</button>
         </nav>
     </div>
     <div id="toast-container"></div>
 
     <script>
-        /* --- GAME CONFIGURATION --- */
+        /* --- GAME LOGIC (V6.1) --- */
         let buyAmount = 1;
-        
-        // Artifact Database
         const artifactDB = [
-            { id: "art_rust", name: "Rusty Scissors", desc: "+25% Click Power, -10% Generator Speed", type: "mixed", bonus: "click", val: 0.25, pen: "mps", penVal: 0.9 },
-            { id: "art_thimble", name: "Lucky Thimble", desc: "+50% Click Power", type: "buff", bonus: "click", val: 0.5 },
-            { id: "art_oil", name: "Machine Oil", desc: "+20% Generator Speed", type: "buff", bonus: "mps", val: 0.2 },
-            { id: "art_glass", name: "Magnifying Glass", desc: "+30% Research Speed (Costs -5%)", type: "buff", bonus: "cost", val: 0.95 },
-            { id: "art_knot", name: "The Impossible Knot", desc: "+100% MPS, Clicks disabled", type: "mixed", bonus: "mps", val: 1.0, pen: "click", penVal: 0 },
-            { id: "art_coin", name: "Ancient Coin", desc: "+50% Luck (Dye/Events)", type: "buff", bonus: "luck", val: 0.5 },
-            { id: "art_needle", name: "Diamond Needle", desc: "Click Power x3", type: "buff", bonus: "click", val: 2.0 },
-            { id: "art_cube", name: "Void Cube", desc: "Unlock creative potential (-10% Costs)", type: "buff", bonus: "cost", val: 0.9 }
+            { id: "art_rust", name: "Rusty Scissors", desc: "+25% Click, -10% Auto", type: "mixed", bonus: "click", val: 0.25, pen: "mps", penVal: 0.9, icon: "✂️" },
+            { id: "art_thimble", name: "Lucky Thimble", desc: "+50% Click Power", type: "buff", bonus: "click", val: 0.5, icon: "🥡" },
+            { id: "art_oil", name: "Machine Oil", desc: "+20% Auto Speed", type: "buff", bonus: "mps", val: 0.2, icon: "🛢️" },
+            { id: "art_glass", name: "Magnifying Glass", desc: "-5% Costs", type: "buff", bonus: "cost", val: 0.95, icon: "🔍" },
+            { id: "art_knot", name: "Impossible Knot", desc: "+100% Auto, No Clicks", type: "mixed", bonus: "mps", val: 1.0, pen: "click", penVal: 0, icon: "🥨" },
+            { id: "art_coin", name: "Ancient Coin", desc: "+50% Luck", type: "buff", bonus: "luck", val: 0.5, icon: "🪙" },
+            { id: "art_needle", name: "Diamond Needle", desc: "Click x3", type: "buff", bonus: "click", val: 2.0, icon: "💎" },
+            { id: "art_cube", name: "Void Cube", desc: "-10% Costs", type: "buff", bonus: "cost", val: 0.9, icon: "⬛" }
         ];
 
-        // Challenge Database
         const challengeDB = [
-            { id: "c1", name: "The Purist", desc: "Reach 5,000 Threads using CLICKS ONLY. Generators are disabled.", reward: "Rune of Fingers (+50% Click Power)", goal: 5000 },
-            { id: "c2", name: "The Observer", desc: "Reach 10,000 Threads without clicking. (Use Golden Threads/Starter Kit)", reward: "Rune of Patience (+20% Passive MPS)", goal: 10000 },
-            { id: "c3", name: "The Drought", desc: "Reach 50,000 Threads. Building costs increase by 50% after every purchase.", reward: "Rune of Wealth (-5% Costs)", goal: 50000 }
+            { id: "c1", name: "The Purist", desc: "Reach 5k Threads. CLICKS ONLY. No Generators.", reward: "+50% Click Power", goal: 5000 },
+            { id: "c2", name: "The Observer", desc: "Reach 10k Threads. NO CLICKS. Generators only.", reward: "+20% Passive MPS", goal: 10000 },
+            { id: "c3", name: "The Drought", desc: "Reach 50k Threads. Costs scale +50% faster.", reward: "-5% Global Costs", goal: 50000 }
         ];
 
         let gameData = {
             threads: 0, totalThreads: 0, lifetimeTotal: 0, silk: 0, clicks: 0,
             startTime: Date.now(), theme: 'standard',
             dyes: { red: 0, blue: 0, green: 0 },
-            artifacts: [], // Stores objects {id: "art_rust", equipped: false}
-            activeChallenge: null,
-            completedChallenges: [],
+            artifacts: [], 
+            activeChallenge: null, completedChallenges: [],
             generators: [
                 { id: 0, name: "Lint Roller", baseCost: 15, mps: 0.5, count: 0 },
                 { id: 1, name: "Grandma's Needle", baseCost: 100, mps: 4, count: 0 },
@@ -320,55 +293,33 @@
             ]
         };
 
-        /* --- CORE LOGIC --- */
+        /* CORE */
         function getCost(base, count, amount) {
             let discount = 1;
-            // Tree
             if(gameData.tree[2].bought) discount *= 0.9;
-            // Dye (Blue)
-            discount *= (1 - (Math.min(50, gameData.dyes.blue * 2) / 100)); // Cap at 50%
-            // Artifacts
-            const equipped = getEquippedArtifacts();
-            equipped.forEach(a => {
-                if(a.bonus === 'cost') discount *= a.val;
-            });
-            // Challenge Rune
+            discount *= (1 - (Math.min(50, gameData.dyes.blue * 2) / 100));
+            getEquippedArtifacts().forEach(a => { if(a.bonus === 'cost') discount *= a.val; });
             if(gameData.completedChallenges.includes('c3')) discount *= 0.95;
 
-            // Challenge Penalty
-            if(gameData.activeChallenge === 'c3') {
-                // Costs scale ridiculously fast
-                const r = 1.5; 
-                return Math.floor(base * Math.pow(r, count));
-            }
-
-            const r = 1.15;
-            let totalCost = 0;
-            if(amount === 1) totalCost = Math.floor(base * Math.pow(r, count));
-            else totalCost = Math.floor(base * ((Math.pow(r, amount) - 1) / (r - 1)) * Math.pow(r, count));
+            const r = (gameData.activeChallenge === 'c3') ? 1.5 : 1.15;
+            let total = 0;
+            if(amount === 1) total = Math.floor(base * Math.pow(r, count));
+            else total = Math.floor(base * ((Math.pow(r, amount) - 1) / (r - 1)) * Math.pow(r, count));
             
-            return Math.floor(totalCost * discount);
+            return Math.floor(total * discount);
         }
 
         function getMPS() {
             let mps = 0;
             let globalMult = 1;
-
-            // Basic Upgrades
             gameData.upgrades.filter(u=>u.bought && u.type==='global').forEach(u => globalMult *= u.mult);
             if(gameData.tree[0].bought) globalMult *= 1.5;
             if(gameData.tree[5].bought) globalMult *= 3;
             if(gameData.tree[4].bought) globalMult *= (1 + (gameData.artifacts.length * 0.01));
-
-            // Dye (Red)
-            globalMult *= (1 + (gameData.dyes.red * 0.1)); // 10% per Red Level
-
-            // Runes
+            globalMult *= (1 + (gameData.dyes.red * 0.1));
             if(gameData.completedChallenges.includes('c2')) globalMult *= 1.2;
 
-            // Artifacts
-            const equipped = getEquippedArtifacts();
-            equipped.forEach(a => {
+            getEquippedArtifacts().forEach(a => {
                 if(a.bonus === 'mps') globalMult *= (1 + a.val);
                 if(a.pen === 'mps') globalMult *= a.penVal;
             });
@@ -378,446 +329,253 @@
                 gameData.upgrades.filter(u=>u.bought && u.type==='gen' && u.gId===g.id).forEach(u => mult *= u.mult);
                 mps += (g.mps * g.count * mult);
             });
-
             return mps * globalMult;
         }
 
         function getClickPower() {
-            if(gameData.activeChallenge === 'c2') return 0; // Challenge: No Clicks
-
+            if(gameData.activeChallenge === 'c2') return 0;
             let power = 1;
-            // Artifacts
-            const equipped = getEquippedArtifacts();
-            equipped.forEach(a => {
-                if(a.bonus === 'click') power += (getMPS() * a.val) + 1; // Scaling click
+            getEquippedArtifacts().forEach(a => {
+                if(a.bonus === 'click') power += (getMPS() * a.val) + 1;
                 if(a.pen === 'click') power = 0;
             });
-            if(power === 0) return 0; // Artifact disabled click
-
+            if(power === 0) return 0;
             gameData.upgrades.filter(u=>u.bought && u.type==='click').forEach(u => power *= u.mult);
-            
-            // Rune
             if(gameData.completedChallenges.includes('c1')) power *= 1.5;
-
-            // Base scaling
             power += (getMPS() * 0.05); 
             return power;
         }
 
-        function getLuck() {
-            let luck = 1;
-            luck += (gameData.dyes.green * 0.05);
-            const equipped = getEquippedArtifacts();
-            equipped.forEach(a => { if(a.bonus === 'luck') luck += a.val; });
-            return luck;
-        }
-
-        /* --- ACTIONS --- */
+        /* ACTIONS */
         function clickAction() {
             const amt = getClickPower();
-            if(amt <= 0) {
-                showToast("Clicks disabled!");
-                return;
-            }
+            if(amt <= 0) { showToast("Clicks Disabled"); return; }
             addThreads(amt);
             gameData.clicks++;
-            
-            // Artifact Drop Chance (0.1% base * luck)
-            if(Math.random() < (0.001 * getLuck())) findArtifact();
-            
+            let luck = 1 + (gameData.dyes.green * 0.05);
+            getEquippedArtifacts().forEach(a => { if(a.bonus === 'luck') luck += a.val; });
+            if(Math.random() < (0.001 * luck)) findArtifact();
             updateUI();
         }
 
-        function addThreads(amt) {
-            gameData.threads += amt;
-            gameData.totalThreads += amt;
-            gameData.lifetimeTotal += amt;
-            checkChallengeWin();
+        function addThreads(n) {
+            gameData.threads += n; gameData.totalThreads += n; gameData.lifetimeTotal += n;
+            if(gameData.activeChallenge) checkChal();
         }
 
         function buyGenerator(id) {
-            if(gameData.activeChallenge === 'c1') { showToast("Challenge Restriction: No Generators!"); return; }
-            
+            if(gameData.activeChallenge === 'c1') { showToast("No Generators in Challenge"); return; }
             const g = gameData.generators[id];
             const cost = getCost(g.baseCost, g.count, buyAmount);
-            if(gameData.threads >= cost) {
-                gameData.threads -= cost;
-                g.count += buyAmount;
-                updateUI();
-            }
+            if(gameData.threads >= cost) { gameData.threads -= cost; g.count += buyAmount; updateUI(); }
         }
 
         function buyUpgrade(id) {
             const u = gameData.upgrades[id];
-            if(!u.bought && gameData.threads >= u.cost) {
-                gameData.threads -= u.cost;
-                u.bought = true;
-                updateUI();
-            }
+            if(!u.bought && gameData.threads >= u.cost) { gameData.threads -= u.cost; u.bought = true; updateUI(); }
         }
 
-        function setBuyAmount(amt) {
-            buyAmount = amt;
-            document.querySelectorAll('.buy-toggle').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-x'+amt).classList.add('active');
-            updateUI();
+        function buyDye(type) {
+            const cost = 10000 * Math.pow(5, gameData.dyes[type]);
+            if(gameData.threads >= cost) { gameData.threads -= cost; gameData.dyes[type]++; updateUI(); showToast("Mixed Dye"); }
+            else showToast(`Need ${format(cost)}`);
         }
 
-        /* --- ARTIFACTS SYSTEM --- */
+        function setBuyAmount(n) { buyAmount = n; document.querySelectorAll('.buy-toggle').forEach(b=>b.classList.remove('active')); document.getElementById('btn-x'+n).classList.add('active'); updateUI(); }
+
+        /* ARTIFACTS */
         function findArtifact() {
-            // Pick random artifact not yet owned
-            const ownedIds = gameData.artifacts.map(a => a.id);
-            const pool = artifactDB.filter(a => !ownedIds.includes(a.id));
-            
-            if(pool.length === 0) {
-                // If all found, small resource bonus instead
-                gameData.threads += (getMPS() * 60);
-                showToast("Found Threads (Vault Full)");
-                return;
-            }
-
-            const found = pool[Math.floor(Math.random() * pool.length)];
+            const owned = gameData.artifacts.map(a=>a.id);
+            const pool = artifactDB.filter(a=>!owned.includes(a.id));
+            if(pool.length === 0) { gameData.threads += getMPS()*60; showToast("Found Threads"); return; }
+            const found = pool[Math.floor(Math.random()*pool.length)];
             gameData.artifacts.push({ id: found.id, equipped: false });
-            showToast(`Found Artifact: ${found.name}`, true);
+            showToast(`Found: ${found.name}`);
             renderArtifacts();
         }
-
+        function getEquippedArtifacts() { return gameData.artifacts.filter(a=>a.equipped).map(a=>artifactDB.find(d=>d.id===a.id)); }
         function toggleArtifact(id) {
-            const art = gameData.artifacts.find(a => a.id === id);
-            if(art.equipped) {
-                art.equipped = false;
-            } else {
-                const equippedCount = gameData.artifacts.filter(a => a.equipped).length;
-                if(equippedCount >= 2) { showToast("Max 2 Artifacts Equipped"); return; }
-                art.equipped = true;
-            }
-            renderArtifacts();
-            updateUI();
+            const a = gameData.artifacts.find(x=>x.id===id);
+            if(a.equipped) a.equipped = false;
+            else if(gameData.artifacts.filter(x=>x.equipped).length < 2) a.equipped = true;
+            else { showToast("Max 2 Equipped"); return; }
+            renderArtifacts(); updateUI();
         }
-
-        function getEquippedArtifacts() {
-            // Returns full DB objects of equipped items
-            return gameData.artifacts
-                .filter(a => a.equipped)
-                .map(a => artifactDB.find(db => db.id === a.id));
-        }
-
         function renderArtifacts() {
             const grid = document.getElementById('artifact-list');
             grid.innerHTML = "";
-            if(gameData.artifacts.length === 0) {
-                grid.innerHTML = `<div class="empty-slot">Find items by playing... (Clicking/Weaving)</div>`;
-                return;
-            }
             gameData.artifacts.forEach(a => {
-                const db = artifactDB.find(d => d.id === a.id);
-                const el = document.createElement('div');
-                el.className = `artifact-slot ${a.equipped ? 'equipped' : ''}`;
-                el.onclick = () => toggleArtifact(a.id);
-                el.innerHTML = `
-                    <div class="art-badge">EQUIPPED</div>
-                    <div class="art-icon">📦</div>
-                    <div>
-                        <div class="art-name">${db.name}</div>
-                        <div class="art-desc">${db.desc}</div>
-                    </div>
-                `;
-                grid.appendChild(el);
+                const db = artifactDB.find(d=>d.id===a.id);
+                grid.innerHTML += `<div class="artifact-slot ${a.equipped?'equipped':''}" onclick="toggleArtifact('${a.id}')">
+                    <div class="art-status">EQUIPPED</div>
+                    <div class="art-icon">${db.icon}</div>
+                    <div class="art-info"><div>${db.name}</div><span>${db.desc}</span></div>
+                </div>`;
             });
+            document.getElementById('art-count').innerText = `${gameData.artifacts.length}/${artifactDB.length}`;
         }
 
-        /* --- DYE SYSTEM --- */
-        function buyDye(type) {
-            const currentLevel = gameData.dyes[type];
-            // Cost scales: 10,000 * 5^level
-            const cost = 10000 * Math.pow(5, currentLevel);
-            
-            if(gameData.threads >= cost) {
-                gameData.threads -= cost;
-                gameData.dyes[type]++;
-                updateUI();
-                showToast(`${type.toUpperCase()} Dye upgraded!`);
-            } else {
-                showToast(`Need ${format(cost)} Threads`);
-            }
+        /* CHALLENGES */
+        function enterChallenge(id) { if(confirm("Start Simulation? (Resets run)")) { gameData.activeChallenge = id; prestige(true); switchTab('weave', document.querySelector('.nav-btn')); } }
+        function exitChallenge() { if(confirm("Abort?")) { gameData.activeChallenge = null; prestige(true); } }
+        function checkChal() {
+            const c = challengeDB.find(x=>x.id===gameData.activeChallenge);
+            if(gameData.threads >= c.goal) { alert(`Simulation Complete. Unlocked: ${c.reward}`); gameData.completedChallenges.push(c.id); gameData.activeChallenge = null; prestige(true); }
         }
 
-        /* --- MONOLITH (CHALLENGES) --- */
-        function renderChallenges() {
-            const list = document.getElementById('challenge-list');
-            list.innerHTML = "";
-            challengeDB.forEach(c => {
-                const isCompleted = gameData.completedChallenges.includes(c.id);
-                const isActive = gameData.activeChallenge === c.id;
-                
-                list.innerHTML += `
-                    <div class="challenge-card ${isActive?'active':''} ${isCompleted?'completed':''}">
-                        <div class="chal-status">${isActive ? "RUNNING" : (isCompleted ? "COMPLETED" : "AVAILABLE")}</div>
-                        <div class="chal-title">${c.name}</div>
-                        <div class="chal-desc">${c.desc}</div>
-                        <div class="chal-reward">Reward: ${c.reward}</div>
-                        ${ !isActive && !isCompleted ? `<button class="main-btn" style="margin-top:10px; padding:5px; font-size:0.8rem;" onclick="enterChallenge('${c.id}')">START SIMULATION</button>` : ''}
-                    </div>
-                `;
-            });
-        }
-
-        function enterChallenge(id) {
-            if(!confirm("Starting a Challenge resets your current run (like Prestige). You keep Artifacts/Dyes/Tree. Proceed?")) return;
-            gameData.activeChallenge = id;
-            prestige(true); // Forced reset
-            showToast("Entering Simulation...");
-            switchTab('weave', document.querySelector('.nav-btn'));
-        }
-
-        function exitChallenge() {
-            if(!confirm("Abort challenge? You will gain nothing.")) return;
-            gameData.activeChallenge = null;
-            prestige(true);
-        }
-
-        function checkChallengeWin() {
-            if(!gameData.activeChallenge) return;
-            const chal = challengeDB.find(c => c.id === gameData.activeChallenge);
-            if(gameData.threads >= chal.goal) {
-                alert(`SIMULATION COMPLETE.\n\nReward Unlocked: ${chal.reward}`);
-                gameData.completedChallenges.push(chal.id);
-                gameData.activeChallenge = null;
-                prestige(true); // Reset to normal
-            }
-        }
-
-        /* --- TREE & PRESTIGE --- */
-        function buyTreeNode(id) {
-            const node = gameData.tree.find(n => n.id === id);
-            if(!node || node.bought) return;
-            if(node.parent !== null && !gameData.tree.find(n=>n.id === node.parent).bought) return;
-            if(gameData.silk >= node.cost) {
-                gameData.silk -= node.cost;
-                node.bought = true;
-                renderTree();
-                updateUI();
-            }
-        }
-
-        function renderTree() {
-            const container = document.getElementById('skill-tree');
-            container.innerHTML = "";
-            [1, 2, 3, 4].forEach(row => {
-                const rDiv = document.createElement('div');
-                rDiv.className = 'tree-row';
-                gameData.tree.filter(n => n.row === row).forEach(n => {
-                    const el = document.createElement('div');
-                    const pBought = n.parent===null || gameData.tree.find(x=>x.id===n.parent).bought;
-                    el.className = `tree-node ${n.bought?'bought':(pBought?'':'locked')}`;
-                    el.onclick = () => buyTreeNode(n.id);
-                    el.innerText = n.name + (n.bought?" (✔)":"");
-                    el.title = `${n.desc} [Cost: ${n.cost}]`;
-                    rDiv.appendChild(el);
-                });
-                container.appendChild(rDiv);
-            });
-        }
-
-        function prestige(force = false) {
+        /* TREE & PRESTIGE */
+        function prestige(force=false) {
             if(!force && gameData.totalThreads < 1000000) return;
-            
-            let pending = 0;
             if(!force) {
-                pending = Math.floor(Math.sqrt(gameData.totalThreads / 1000000));
-                if(!confirm(`Unravel Reality? +${pending} Silk`)) return;
+                const pending = Math.floor(Math.sqrt(gameData.totalThreads/1000000));
+                if(!confirm(`Unravel? +${pending} Silk`)) return;
                 gameData.silk += pending;
             }
-
-            // Reset Run
             gameData.threads = gameData.tree[3].bought ? 500 : 0;
             gameData.totalThreads = 0;
-            gameData.generators.forEach(g => g.count = 0);
-            gameData.upgrades.forEach(u => u.bought = false);
-            
-            // Note: Artifacts, Dyes, Challenges, Silk, Tree persist
-            updateUI();
-            saveGame();
+            gameData.generators.forEach(g=>g.count=0);
+            gameData.upgrades.forEach(u=>u.bought=false);
+            updateUI(); saveGame();
+        }
+        function buyTreeNode(id) {
+            const n = gameData.tree.find(x=>x.id===id);
+            if(!n || n.bought || (n.parent!==null && !gameData.tree.find(x=>x.id===n.parent).bought)) return;
+            if(gameData.silk >= n.cost) { gameData.silk -= n.cost; n.bought = true; renderTree(); updateUI(); }
+        }
+        function renderTree() {
+            const el = document.getElementById('skill-tree');
+            el.innerHTML = "";
+            gameData.tree.forEach(n => {
+                const pBought = n.parent===null || gameData.tree.find(x=>x.id===n.parent).bought;
+                el.innerHTML += `<div style="padding:10px; border:1px solid #555; width:200px; text-align:center; cursor:pointer; background:${n.bought?'#d8bfd8':'#222'}; color:${n.bought?'#000':'#fff'}; opacity:${pBought?1:0.3}" onclick="buyTreeNode(${n.id})">
+                    <b>${n.name}</b><br><span style="font-size:0.7rem">${n.desc}</span><br>${n.bought?'Owned':n.cost+' Silk'}
+                </div>`;
+            });
         }
 
-        /* --- GOLDEN THREAD --- */
-        function spawnGoldenThread() {
-            const el = document.getElementById('golden-thread');
-            if(el.style.display === 'block') return;
-            const app = document.getElementById('app');
-            el.style.top = (Math.random()*(app.offsetHeight-50)+20) + "px";
-            el.style.left = (Math.random()*(app.offsetWidth-50)+10) + "px";
-            el.style.display = 'block';
-            setTimeout(() => { if(el.style.display==='block') el.style.display='none'; }, 8000);
+        /* UTILS */
+        function format(n) {
+            if(n<1000) return Math.floor(n);
+            if(n<1000000) return (n/1000).toFixed(2)+"k";
+            if(n<1000000000) return (n/1000000).toFixed(2)+"M";
+            return (n/1000000000).toFixed(2)+"B";
         }
-
-        function clickGoldenThread() {
-            document.getElementById('golden-thread').style.display = 'none';
-            // Bonus varies based on Dye/Artifacts
-            const mps = getMPS();
-            const bonus = Math.max(500, mps * 120); 
-            addThreads(bonus);
-            showToast(`Golden Thread! +${format(bonus)}`);
-            
-            // Chance for Artifact
-            if(Math.random() < (0.05 * getLuck())) findArtifact();
-        }
-
-        /* --- UTILS --- */
-        function format(num) {
-            if(num < 1000) return Math.floor(num);
-            if(num < 1000000) return (num/1000).toFixed(2) + "k";
-            if(num < 1000000000) return (num/1000000).toFixed(2) + "M";
-            if(num < 1000000000000) return (num/1000000000).toFixed(2) + "B";
-            return "Inf";
-        }
-        function showToast(msg, isRare=false) {
-            const con = document.getElementById('toast-container');
-            const el = document.createElement('div');
-            el.className = `toast ${isRare?'rare':''}`; el.innerText = msg;
-            con.appendChild(el);
-            setTimeout(() => el.remove(), 3000);
+        function showToast(msg) {
+            const el = document.createElement('div'); el.className='toast'; el.innerText=msg;
+            document.getElementById('toast-container').appendChild(el);
+            setTimeout(()=>el.remove(),3000);
         }
         function switchTab(id, btn) {
-            if(btn && btn.classList.contains('locked')) { showToast("Feature Locked"); return; }
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            
-            if(id === 'vault') renderArtifacts();
-            if(id === 'tapestry') renderTree();
-            if(id === 'monolith') renderChallenges();
+            if(btn.classList.contains('locked')) return;
+            document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+            document.getElementById('tab-'+id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            if(id==='vault') renderArtifacts();
+            if(id==='tapestry') renderTree();
+            if(id==='monolith') renderChallenges();
         }
-        function setTheme(name) { document.body.setAttribute('data-theme', name); gameData.theme = name; }
+        function renderChallenges() {
+            const el = document.getElementById('challenge-list'); el.innerHTML = "";
+            challengeDB.forEach(c => {
+                const act = gameData.activeChallenge === c.id;
+                const comp = gameData.completedChallenges.includes(c.id);
+                el.innerHTML += `<div class="challenge-card ${act?'active':''} ${comp?'completed':''}">
+                    <div style="font-weight:bold; color:#fff">${c.name} ${comp?'(DONE)':''}</div>
+                    <div style="font-size:0.8rem; color:#aaa; margin:5px 0">${c.desc}</div>
+                    <div style="font-size:0.8rem; color:var(--highlight-color)">Reward: ${c.reward}</div>
+                    ${!act && !comp ? `<button class="main-btn" style="margin-top:10px; padding:5px; font-size:0.8rem" onclick="enterChallenge('${c.id}')">Start</button>` : ''}
+                </div>`;
+            });
+        }
+        function setTheme(t) { document.body.setAttribute('data-theme', t); gameData.theme = t; }
 
-        /* --- SAVE/LOAD --- */
-        function saveGame() { localStorage.setItem('loomSaveV6', JSON.stringify(gameData)); }
-        function loadGame() {
-            let save = JSON.parse(localStorage.getItem('loomSaveV6'));
-            if(!save) save = JSON.parse(localStorage.getItem('loomSaveV50')); // Migration support
-            if(save) {
-                // Merge save with default data structure to support new V6 features
-                gameData = { ...gameData, ...save };
-                // Ensure deep merge for objects/arrays if needed
-                if(save.dyes) gameData.dyes = save.dyes;
-                if(save.artifacts) gameData.artifacts = save.artifacts;
-                if(save.completedChallenges) gameData.completedChallenges = save.completedChallenges;
-                
-                // Generator/Upgrade sync
-                if(save.generators) save.generators.forEach((g,i) => { if(gameData.generators[i]) gameData.generators[i].count = g.count; });
-                if(save.upgrades) save.upgrades.forEach((u,i) => { if(gameData.upgrades[i]) gameData.upgrades[i].bought = u.bought; });
-                if(save.tree) save.tree.forEach(t => { const m = gameData.tree.find(n=>n.id===t.id); if(m) m.bought = t.bought; });
-                
-                setTheme(gameData.theme);
-            }
+        /* GOLDEN THREAD */
+        function spawnGoldenThread() {
+            const el = document.getElementById('golden-thread');
+            const app = document.getElementById('app');
+            el.style.top = (Math.random()*(app.offsetHeight-40)+20)+"px";
+            el.style.left = (Math.random()*(app.offsetWidth-40)+10)+"px";
+            el.style.display = 'block';
+            setTimeout(()=>{ if(el.style.display==='block') el.style.display='none'; }, 6000);
         }
-        function hardReset() { if(confirm("Full Wipe?")) { localStorage.removeItem('loomSaveV6'); location.reload(); } }
-        function exportSave() { navigator.clipboard.writeText(btoa(JSON.stringify(gameData))); showToast("Copied to Clipboard"); }
-        function importSave() { 
-            try { 
-                const d = JSON.parse(atob(prompt("Paste Code:"))); 
-                localStorage.setItem('loomSaveV6', JSON.stringify(d)); 
-                location.reload(); 
-            } catch(e) { alert("Invalid"); } 
+        function clickGoldenThread() {
+            document.getElementById('golden-thread').style.display='none';
+            let amt = Math.max(500, getMPS()*60);
+            addThreads(amt); showToast("Golden Thread!");
+            if(Math.random() < 0.05) findArtifact();
         }
 
-        /* --- LOOP --- */
+        /* LOOP & SAVE */
         function updateUI() {
             document.getElementById('score').innerText = format(gameData.threads);
             document.getElementById('mps').innerText = format(getMPS()) + " / sec";
             
-            // Sub-currencies
-            if(gameData.lifetimeTotal > 10000) {
-                document.getElementById('ui-silk').style.display='block'; document.getElementById('val-silk').innerText = gameData.silk;
-                document.getElementById('tree-silk').innerText = gameData.silk;
-            }
-            if(gameData.lifetimeTotal > 100000) {
-                document.getElementById('nav-dye').classList.remove('locked');
-                document.getElementById('ui-red').style.display='block'; document.getElementById('val-red').innerText = gameData.dyes.red;
-                document.getElementById('ui-blue').style.display='block'; document.getElementById('val-blue').innerText = gameData.dyes.blue;
-                document.getElementById('ui-green').style.display='block'; document.getElementById('val-green').innerText = gameData.dyes.green;
-            }
+            // Unlocks
+            if(gameData.lifetimeTotal > 10000) document.getElementById('nav-tree').classList.remove('locked');
+            if(gameData.lifetimeTotal > 100000) document.getElementById('nav-dye').classList.remove('locked');
             if(gameData.lifetimeTotal > 500000) document.getElementById('nav-mono').classList.remove('locked');
 
-            // Challenge Banner
-            const banner = document.getElementById('chal-banner');
-            const exitBtn = document.getElementById('exit-chal-btn');
-            if(gameData.activeChallenge) {
-                banner.style.display = 'block';
-                banner.innerText = `⚠ SIMULATION ACTIVE: ${challengeDB.find(c=>c.id===gameData.activeChallenge).name.toUpperCase()} ⚠`;
-                exitBtn.style.display = 'block';
-            } else {
-                banner.style.display = 'none';
-                exitBtn.style.display = 'none';
-            }
-
-            // Generators
+            // Generator List
             const gList = document.getElementById('generators-list');
-            if(gList.children.length !== gameData.generators.length) {
-                gList.innerHTML = "";
+            if(gList.innerHTML === "") {
                 gameData.generators.forEach(g => {
-                    gList.innerHTML += `<div class="card" id="gen-card-${g.id}" onclick="buyGenerator(${g.id})">
+                    gList.innerHTML += `<div class="card" id="gen-${g.id}" onclick="buyGenerator(${g.id})">
                         <div class="card-info"><h4>${g.name}</h4><p>+${g.mps} mps</p></div>
-                        <div class="card-meta"><div class="card-count" id="gen-count-${g.id}">0</div><div class="card-cost" id="gen-cost-${g.id}">0</div></div>
+                        <div class="card-meta"><div class="card-count" id="g-count-${g.id}">0</div><div class="card-cost" id="g-cost-${g.id}">0</div></div>
                     </div>`;
                 });
             }
             gameData.generators.forEach(g => {
-                const cost = getCost(g.baseCost, g.count, buyAmount);
-                const el = document.getElementById(`gen-card-${g.id}`);
-                const canAfford = gameData.threads >= cost;
-                if(canAfford && !el.classList.contains('disabled')) {} // micro-opt
-                el.className = `card ${canAfford?'':'disabled'}`;
-                document.getElementById(`gen-count-${g.id}`).innerText = g.count;
-                document.getElementById(`gen-cost-${g.id}`).innerText = format(cost);
+                const c = getCost(g.baseCost, g.count, buyAmount);
+                document.getElementById(`gen-${g.id}`).className = `card ${gameData.threads>=c?'':'disabled'}`;
+                document.getElementById(`g-count-${g.id}`).innerText = g.count;
+                document.getElementById(`g-cost-${g.id}`).innerText = format(c);
             });
 
-            // Research
+            // Upgrades
             const uList = document.getElementById('upgrades-list');
             uList.innerHTML = "";
             gameData.upgrades.filter(u=>!u.bought).forEach(u => {
                 uList.innerHTML += `<div class="card ${gameData.threads>=u.cost?'':'disabled'}" onclick="buyUpgrade(${u.id})">
-                    <div class="card-info"><h4>${u.name}</h4><p>${u.desc}</p></div><div class="card-meta"><div class="card-cost">${format(u.cost)}</div></div></div>`;
+                    <div class="card-info"><h4>${u.name}</h4><p>${u.desc}</p></div><div class="card-meta"><div class="card-cost">${format(u.cost)}</div></div>
+                </div>`;
             });
-            if(uList.innerHTML==="") uList.innerHTML = "<div style='opacity:0.5;text-align:center'>Research Complete</div>";
+            if(uList.innerHTML==="") uList.innerHTML="<div style='text-align:center; opacity:0.5; padding:20px'>Research Complete</div>";
 
-            // Dye Values
-            document.getElementById('dye-red-amt').innerText = gameData.dyes.red;
-            document.getElementById('eff-red').innerText = (gameData.dyes.red * 10);
-            document.getElementById('dye-blue-amt').innerText = gameData.dyes.blue;
-            document.getElementById('eff-blue').innerText = Math.min(50, gameData.dyes.blue * 2);
-            document.getElementById('dye-green-amt').innerText = gameData.dyes.green;
-            document.getElementById('eff-green').innerText = (gameData.dyes.green * 5);
+            // Dyes & Silk
+            document.getElementById('val-red').innerText = gameData.dyes.red;
+            document.getElementById('val-blue').innerText = gameData.dyes.blue;
+            document.getElementById('val-green').innerText = gameData.dyes.green;
+            document.getElementById('tree-silk').innerText = gameData.silk + " Silk";
+            document.getElementById('pending-silk').innerText = Math.floor(Math.sqrt(gameData.totalThreads/1000000));
+            document.getElementById('void-btn').disabled = gameData.totalThreads < 1000000;
 
-            // Prestige
-            const pending = Math.floor(Math.sqrt(gameData.totalThreads / 1000000));
-            document.getElementById('pending-silk').innerText = pending;
-            document.getElementById('void-btn').disabled = (gameData.totalThreads < 1000000);
-            
-            // Stats
-            document.getElementById('stats-area').innerHTML = `
-                Playtime: ${Math.floor((Date.now()-gameData.startTime)/60000)}m<br>
-                Artifacts Found: ${gameData.artifacts.length}/${artifactDB.length}<br>
-                Runes: ${gameData.completedChallenges.length}/${challengeDB.length}
-            `;
+            // Challenge Active UI
+            document.getElementById('active-chal-ui').style.display = gameData.activeChallenge ? 'block' : 'none';
+            document.getElementById('stats-area').innerHTML = `Time: ${Math.floor((Date.now()-gameData.startTime)/60000)}m | Ver: 6.1`;
         }
 
-        setInterval(() => {
-            const mps = getMPS();
-            if(mps > 0) addThreads(mps/10);
-            updateUI();
-        }, 100);
-
+        setInterval(() => { if(getMPS()>0) addThreads(getMPS()/10); updateUI(); }, 100);
         setInterval(() => saveGame(), 15000);
+        (function loopG(){ setTimeout(()=>{ spawnGoldenThread(); loopG(); }, Math.random()*30000+20000); })();
         
-        (function loopGolden() {
-            setTimeout(() => {
-                spawnGoldenThread();
-                loopGolden();
-            }, Math.random() * 30000 + 30000);
-        })();
-
+        function saveGame() { localStorage.setItem('loomSaveV6_1', JSON.stringify(gameData)); }
+        function loadGame() {
+            let s = JSON.parse(localStorage.getItem('loomSaveV6_1'));
+            if(!s) s = JSON.parse(localStorage.getItem('loomSaveV6'));
+            if(s) {
+                gameData = {...gameData, ...s}; 
+                // fix array merges
+                if(s.generators) s.generators.forEach((g,i)=>gameData.generators[i].count=g.count);
+                if(s.upgrades) s.upgrades.forEach((u,i)=>gameData.upgrades[i].bought=u.bought);
+                if(s.tree) s.tree.forEach(t=>{const m=gameData.tree.find(n=>n.id===t.id); if(m) m.bought=t.bought;});
+                if(s.artifacts) gameData.artifacts = s.artifacts;
+                setTheme(gameData.theme);
+            }
+        }
+        function hardReset() { if(confirm("Wipe?")) { localStorage.removeItem('loomSaveV6_1'); location.reload(); } }
+        
         loadGame();
         updateUI();
     </script>
