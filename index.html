@@ -3,268 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Loom v6.1: Restored</title>
+    <title>The Loom v5.1: Chalice of Strife</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧶</text></svg>">
 
     <style>
         :root { --transition: all 0.2s ease; }
 
-        /* --- RESTORED THEMES (Cleaner Colors) --- */
-        [data-theme="standard"] { --bg: #1a1a1a; --panel: #222; --text: #eee; --high: #fff; --acc: #888; --bord: #333; --font: 'Segoe UI', sans-serif; --btn: #1a1a1a; --highlight-color: #d8bfd8; }
-        [data-theme="blueprint"] { --bg: #2b506e; --panel: #36648b; --text: #e0f0ff; --high: #fff; --acc: #aaddff; --bord: #5c8aae; --font: 'Courier New', monospace; --btn: #4682b4; --highlight-color: #aaddff; }
-        
+        /* --- THEMES --- */
+        [data-theme="standard"] { --bg: #1e1e1e; --panel: #252526; --text: #d4d4d4; --high: #4fc1ff; --acc: #ce9178; --bord: #3e3e42; --font: 'Segoe UI', sans-serif; --btn: #333; --danger: #ff4f4f; }
+        [data-theme="blueprint"] { --bg: #2b506e; --panel: #36648b; --text: #e0f0ff; --high: #fff; --acc: #aaddff; --bord: #5c8aae; --font: 'Courier New', monospace; --btn: #4682b4; --danger: #ff9999; }
+        [data-theme="midnight"] { --bg: #0f172a; --panel: #1e293b; --text: #e2e8f0; --high: #818cf8; --acc: #38bdf8; --bord: #334155; --font: 'Verdana', sans-serif; --btn: #1e293b; --danger: #f87171; }
+        [data-theme="terminal"] { --bg: #1a1a1a; --panel: #000; --text: #ffb000; --high: #ffcc00; --acc: #ff9900; --bord: #664400; --font: 'VT323', monospace; --btn: #332200; --danger: #ff0000; }
+        [data-theme="golden"] { --bg: #2c241b; --panel: #4a3b2a; --text: #fff8e1; --high: #ffd700; --acc: #ffecb3; --bord: #8a6e45; --font: 'Georgia', serif; --btn: #5c4d35; --danger: #ff6b6b; }
+        [data-theme="nebula"] { --bg: #120b29; --panel: #241645; --text: #e0ccff; --high: #00ffff; --acc: #ff00ff; --bord: #482c8a; --font: 'Trebuchet MS', sans-serif; --btn: #351c6e; --danger: #ff0055; }
+
         body {
             background-color: var(--bg); color: var(--text); font-family: var(--font);
             margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
             transition: var(--transition); user-select: none;
         }
 
-        /* --- LAYOUT RESTORATION --- */
-        #ticker-wrap { background: var(--panel); border-bottom: 1px solid var(--bord); height: 30px; display: flex; align-items: center; font-size: 0.8rem; flex-shrink: 0; opacity: 0.7; }
-        #ticker { display: inline-block; padding-left: 100%; animation: scroll 45s linear infinite; color: var(--high); white-space: nowrap; }
+        /* --- LAYOUT --- */
+        #ticker-wrap { background: var(--panel); border-bottom: 1px solid var(--bord); height: 35px; overflow: hidden; display: flex; align-items: center; font-size: 0.9rem; flex-shrink: 0; }
+        #ticker { display: inline-block; padding-left: 100%; animation: scroll 60s linear infinite; color: var(--high); font-weight: bold; white-space: nowrap; }
         @keyframes scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         #app { display: grid; grid-template-rows: auto 1fr auto; height: 100%; max-width: 800px; margin: 0 auto; width: 100%; border-left: 1px solid var(--bord); border-right: 1px solid var(--bord); background: var(--bg); position: relative; }
 
-        /* Cleaner Header - No clutter */
-        header { padding: 25px; text-align: center; border-bottom: 1px solid var(--bord); background: var(--bg); }
-        .currency-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; margin-bottom: 5px; }
-        .currency-display { font-size: 3rem; color: var(--high); font-weight: 300; line-height: 1; margin: 0; font-variant-numeric: tabular-nums; }
-        .mps-display { font-size: 0.9rem; color: var(--acc); margin-top: 8px; font-variant-numeric: tabular-nums; }
+        header { padding: 20px; text-align: center; border-bottom: 1px solid var(--bord); position: relative;}
+        .currency-display { font-size: 2.5rem; color: var(--high); font-weight: bold; line-height: 1; margin: 10px 0; }
+        .silk-display { font-size: 1.2rem; color: #d8bfd8; margin-top: 5px; font-weight: bold; display:none;}
         
-        .tab-content { overflow-y: auto; padding: 20px; display: none; height: 100%; box-sizing: border-box; }
-        .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Cleaner Nav - Text based again */
-        nav { display: flex; border-top: 1px solid var(--bord); background: var(--panel); overflow-x: auto; scrollbar-width: none; }
-        nav::-webkit-scrollbar { display: none; }
-        .nav-btn { flex: 1; min-width: 80px; padding: 15px; background: none; border: none; color: var(--text); font-family: var(--font); cursor: pointer; opacity: 0.5; text-transform: uppercase; border-right: 1px solid var(--bord); font-size: 0.75rem; letter-spacing: 1px; transition: all 0.2s; }
-        .nav-btn:hover { opacity: 1; background: rgba(255,255,255,0.03); }
-        .nav-btn.active { opacity: 1; color: var(--high); background: var(--bg); border-top: 3px solid var(--highlight-color); font-weight: bold; }
-        .nav-btn.locked { opacity: 0.2; pointer-events: none; }
-
-        /* --- UI COMPONENTS --- */
-        .main-btn { width: 100%; padding: 20px; font-size: 1.1rem; background: transparent; color: var(--high); border: 1px solid var(--bord); border-radius: 4px; cursor: pointer; font-family: var(--font); transition: all 0.1s; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; }
-        .main-btn:hover { border-color: var(--high); background: rgba(255,255,255,0.02); }
-        .main-btn:active { transform: scale(0.99); }
-        .main-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; border-color: var(--bord); }
-
-        .section-header { border-bottom: 1px solid var(--bord); padding-bottom: 10px; margin-bottom: 15px; color: var(--highlight-color); font-weight: normal; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
-
-        /* Generator Cards - Restored to clean look */
-        .card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--bord); cursor: pointer; transition: background 0.2s; }
-        .card:first-child { border-top: 1px solid var(--bord); }
-        .card:hover { background: rgba(255,255,255,0.03); }
-        .card.disabled { opacity: 0.4; pointer-events: none; }
-        .card-info h4 { margin: 0; font-weight: normal; font-size: 1rem; color: var(--text); }
-        .card-info p { margin: 4px 0 0; font-size: 0.8rem; color: var(--acc); }
-        .card-meta { text-align: right; }
-        .card-cost { color: var(--acc); font-size: 0.85rem; }
-        .card-count { font-size: 1.2rem; color: var(--high); margin-bottom: 2px; }
-
-        .buy-controls { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
-        .buy-toggle { background: transparent; border: 1px solid var(--bord); color: var(--acc); padding: 5px 15px; cursor: pointer; border-radius: 20px; font-size: 0.8rem; }
-        .buy-toggle.active { border-color: var(--high); color: var(--high); background: rgba(255,255,255,0.05); }
-
-        /* --- ARTIFACTS (Cleaner Grid) --- */
-        .artifact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .artifact-slot { border: 1px solid var(--bord); padding: 15px; border-radius: 4px; text-align: left; cursor: pointer; position: relative; min-height: 80px; display: flex; align-items: center; gap: 10px; transition: border 0.2s; }
-        .artifact-slot:hover { border-color: var(--high); }
-        .artifact-slot.equipped { border-color: #ffd700; background: rgba(255, 215, 0, 0.05); }
-        .art-icon { font-size: 1.5rem; }
-        .art-info div { font-size: 0.9rem; font-weight: bold; color: var(--text); }
-        .art-info span { font-size: 0.75rem; color: var(--acc); display: block; }
-        .art-status { position: absolute; top: 5px; right: 5px; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: #ffd700; display: none; }
-        .artifact-slot.equipped .art-status { display: block; }
-
-        /* --- DYE VAT (Table style) --- */
-        .vat-display { display: flex; justify-content: space-around; padding: 20px; background: rgba(255,255,255,0.02); margin-bottom: 20px; border-radius: 4px; }
-        .vat-col { text-align: center; }
-        .vat-val { font-size: 1.5rem; font-weight: bold; }
-        .vat-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; }
-        
-        .dye-list { display: flex; flex-direction: column; gap: 10px; }
-        .dye-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--bord); }
-        .dye-btn { background: transparent; border: 1px solid var(--bord); color: var(--text); padding: 8px 15px; cursor: pointer; font-size: 0.8rem; min-width: 100px; }
-        .dye-btn:hover { border-color: var(--high); }
-
-        /* --- MONOLITH --- */
-        .challenge-card { border: 1px solid var(--bord); padding: 15px; margin-bottom: 15px; opacity: 0.7; transition: opacity 0.2s; }
-        .challenge-card:hover { opacity: 1; border-color: var(--acc); }
-        .challenge-card.active { border-color: #ff4444; opacity: 1; border-left: 4px solid #ff4444; }
-        .challenge-card.completed { border-left: 4px solid #44ff44; opacity: 0.5; }
-
-        /* --- UTILS --- */
-        #toast-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); pointer-events: none; z-index: 100; text-align: center; width: 100%; }
-        .toast { display: inline-block; background: var(--high); color: var(--bg); padding: 8px 16px; margin-top: 5px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; animation: fadeUp 3s forwards; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(10px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
-
-        /* Golden Thread */
-        #golden-thread {
-            position: absolute; width: 20px; height: 20px; border-radius: 50%;
-            background: #ffd700; box-shadow: 0 0 10px #ffd700; cursor: pointer; z-index: 999;
-            display: none; animation: pulse 2s infinite;
+        /* Challenge Banner in Header */
+        #challenge-banner { 
+            display: none; background: var(--danger); color: #fff; 
+            font-size: 0.8rem; padding: 2px 10px; border-radius: 4px; 
+            position: absolute; top: 10px; right: 10px; font-weight: bold; 
+            animation: pulse 2s infinite;
         }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        
+        .tab-content { overflow-y: auto; padding: 15px; display: none; height: 100%; box-sizing: border-box; }
+        .tab-content.active { display: block; }
+
+        nav { display: flex; border-top: 1px solid var(--bord); background: var(--panel); }
+        .nav-btn { flex: 1; padding: 15px; background: none; border: none; color: var(--text); font-family: var(--font); font-weight: bold; cursor: pointer; opacity: 0.6; text-transform: uppercase; border-right: 1px solid var(--bord); position: relative; transition: all 0.3s; font-size: 0.8rem; }
+        .nav-btn:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+        .nav-btn.active { opacity: 1; color: var(--high); border-top: 3px solid var(--high); background: var(--bg); }
+        .nav-btn.special { color: #d8bfd8; } 
+        
+        .nav-btn.cat-tab { color: #ffa500; }
+        .nav-btn.locked { opacity: 0.4; cursor: not-allowed; filter: grayscale(1); background: #110000; }
+
+        .main-btn { width: 100%; padding: 20px; font-size: 1.1rem; background: var(--btn); color: var(--high); border: 2px solid var(--high); border-radius: 6px; cursor: pointer; font-family: var(--font); font-weight: bold; box-shadow: 0 4px 0 var(--bord); transition: transform 0.1s; margin-bottom: 20px; }
+        .main-btn:active { transform: translateY(4px); box-shadow: none; }
+        .main-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(1); }
+
+        .card { background: var(--panel); border: 1px solid var(--bord); padding: 12px; margin-bottom: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; }
+        .card:hover { border-color: var(--high); }
+        .card.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        .card-info h4 { margin: 0; color: var(--text); }
+        .card-info p { margin: 3px 0 0; font-size: 0.8rem; opacity: 0.7; }
+        .card-meta { text-align: right; }
+        .card-cost { color: var(--acc); font-weight: bold; font-size: 0.9rem; }
+        .card-count { font-size: 1.2rem; color: var(--high); font-weight: bold; }
+
+        /* Challenge Cards */
+        .card.challenge { border-color: var(--danger); background: rgba(50, 0, 0, 0.2); }
+        .card.challenge:hover { background: rgba(50, 0, 0, 0.4); border-color: #fff; }
+        .card.challenge.completed { border-color: #00ff00; background: rgba(0, 50, 0, 0.2); }
+        .challenge-btn { background: var(--danger); color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-left: 10px;}
+        .challenge-btn:disabled { background: #555; cursor: not-allowed; }
+
+        .buy-controls { display: flex; justify-content: flex-end; margin-bottom: 10px; gap: 5px; }
+        .buy-toggle { padding: 5px 10px; font-size: 0.8rem; background: var(--panel); border: 1px solid var(--bord); color: var(--text); cursor: pointer; }
+        .buy-toggle.active { background: var(--high); color: var(--bg); border-color: var(--high); font-weight: bold; }
+
+        /* --- THE TAPESTRY (TREE) --- */
+        .tree-container { display: flex; flex-direction: column; align-items: center; padding-top: 10px; position: relative; padding-bottom: 50px; }
+        .tree-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; position: relative; width: 100%; }
+        .row-connector { text-align: center; color: var(--bord); font-size: 1.5rem; margin-top: -30px; margin-bottom: 10px; opacity: 0.5; }
+
+        .tree-node {
+            width: 90px; height: 90px; border-radius: 12px; border: 2px solid var(--bord);
+            background: var(--panel); color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; z-index: 2; transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 0.8rem; text-align: center; padding: 5px;
+        }
+        .tree-node:hover { transform: scale(1.05); z-index: 10; }
+        .tree-node.unlocked { border-color: #d8bfd8; color: #d8bfd8; box-shadow: 0 0 10px rgba(216, 191, 216, 0.2); }
+        .tree-node.bought { background: #d8bfd8; color: #220022; border-color: #fff; box-shadow: 0 0 20px #d8bfd8; font-weight: bold; }
+        .tree-node .node-name { font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
+        .tree-node .node-desc { font-size: 0.65rem; opacity: 0.8; line-height: 1.1; }
+        .tree-node.bought .node-desc { opacity: 1; font-weight: normal; }
+        .tree-node .node-cost { margin-top: 4px; font-size: 0.7rem; color: var(--acc); background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px;}
+        .tree-node.bought .node-cost { display: none; }
+        .tree-node.locked { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+
+        /* --- SYSTEM UI --- */
+        .system-panel { background: rgba(0,0,0,0.2); border: 1px solid var(--bord); padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        .system-header { color: var(--high); font-weight: bold; border-bottom: 1px solid var(--bord); padding-bottom: 5px; margin-bottom: 10px; display:flex; justify-content: space-between;}
+        
+        /* --- GOLDEN THREAD --- */
+        #golden-thread {
+            position: absolute; width: 30px; height: 30px; border-radius: 50%;
+            background: radial-gradient(circle, #ffd700, #b8860b);
+            box-shadow: 0 0 15px #ffd700; cursor: pointer; z-index: 999;
+            display: none; animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* --- STATS & MISC --- */
+        .stats-row { display: flex; justify-content: space-between; margin-bottom: 5px; border-bottom: 1px dashed #333; padding-bottom: 2px; font-size:0.9rem;}
+        
+        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+        .theme-btn { padding: 10px; border: 1px solid var(--bord); background: var(--panel); color: var(--text); cursor: pointer; font-size: 0.8rem;}
+        .theme-btn.locked { opacity: 0.5; cursor: not-allowed; background: #000; }
+        
+        .cat-container { text-align: center; border: 2px solid #ffa500; background: rgba(255, 165, 0, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .cat-eye { font-size: 4rem; animation: blink 4s infinite; display: inline-block; transform: scaleY(0.8); color: #ffa500; }
+        @keyframes blink { 0%, 96%, 100% { transform: scaleY(0.8); } 98% { transform: scaleY(0.1); } }
+
+        #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); pointer-events: none; z-index: 100; }
+        .toast { background: var(--high); color: var(--bg); padding: 10px 20px; margin-top: 5px; border-radius: 4px; text-align: center; font-weight: bold; animation: slideUp 0.5s ease, fadeOut 0.5s 3s forwards; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; } }
+        
+        .save-controls { display:flex; gap:5px; margin-top:10px; }
+        .save-btn { flex:1; padding:8px; cursor:pointer; background:var(--panel); border:1px solid var(--bord); color:var(--text); }
+        .glow-btn { animation: glowPulse 2s infinite; border-color: #d8bfd8; box-shadow: 0 0 10px #d8bfd8; }
+        @keyframes glowPulse { 0% { box-shadow: 0 0 5px #d8bfd8; } 50% { box-shadow: 0 0 20px #d8bfd8; } 100% { box-shadow: 0 0 5px #d8bfd8; } }
+        
+        .ach-grid { display: grid; grid-template-columns: 1fr; gap: 5px; max-height: 250px; overflow-y: auto; }
+        .ach-item { border-bottom:1px solid #333; padding:5px; font-size: 0.9rem; }
+        .ach-reward { font-size:0.7rem; opacity:0.7; margin-top: 2px; }
     </style>
 </head>
 <body data-theme="standard">
 
     <div id="ticker-wrap">
-        <div id="ticker">System initialized... Reality restored...</div>
+        <div id="ticker">System initialized... Weaving reality...</div>
     </div>
     
     <div id="golden-thread" onclick="clickGoldenThread()"></div>
 
     <div id="app">
         <header>
+            <div id="challenge-banner">CHALLENGE ACTIVE</div>
             <div class="currency-label">Universal Threads</div>
             <div class="currency-display" id="score">0</div>
-            <div class="mps-display" id="mps">0.0 / sec</div>
+            <div class="silk-display" id="silk-ui">✧ <span id="silk-score">0</span> Silk ✧</div>
+            <div class="mps-display" id="mps">0.0 per second</div>
         </header>
 
         <div id="tab-weave" class="tab-content active">
-            <button class="main-btn" onclick="clickAction()">Weave Fabric</button>
-            
+            <button class="main-btn" id="stitch-btn" onclick="clickAction()">WEAVE FABRIC <span style="font-size:0.8em; opacity:0.6;">(Space)</span></button>
             <div class="buy-controls">
-                <button class="buy-toggle active" id="btn-x1" onclick="setBuyAmount(1)">1</button>
-                <button class="buy-toggle" id="btn-x10" onclick="setBuyAmount(10)">10</button>
-                <button class="buy-toggle" id="btn-x100" onclick="setBuyAmount(100)">100</button>
+                <button class="buy-toggle active" id="btn-x1" onclick="setBuyAmount(1)">x1</button>
+                <button class="buy-toggle" id="btn-x10" onclick="setBuyAmount(10)">x10</button>
+                <button class="buy-toggle" id="btn-x100" onclick="setBuyAmount(100)">x100</button>
             </div>
-
             <div id="generators-list"></div>
         </div>
 
         <div id="tab-research" class="tab-content">
-            <h3 class="section-header">Research</h3>
+            <h3 style="color:var(--high); border-bottom:1px solid var(--bord);">Challenges</h3>
+            <div id="challenges-list" style="margin-bottom: 20px;"></div>
+            
+            <h3 style="color:var(--high); border-bottom:1px solid var(--bord);">Pattern Research</h3>
             <div id="upgrades-list"></div>
         </div>
 
-        <div id="tab-vault" class="tab-content">
-            <h3 class="section-header">Artifact Vault <span style="font-size:0.8rem; opacity:0.5" id="art-count">0/8</span></h3>
-            <div class="artifact-grid" id="artifact-list">
-                <div style="grid-column: span 2; text-align: center; padding: 40px; opacity: 0.5; font-style: italic;">
-                    Artifacts are found randomly while weaving...
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-dye" class="tab-content">
-            <h3 class="section-header">The Dye Vat</h3>
-            
-            <div class="vat-display">
-                <div class="vat-col" style="color:#ff6b6b">
-                    <div class="vat-val" id="val-red">0</div>
-                    <div class="vat-label">Red (Speed)</div>
-                </div>
-                <div class="vat-col" style="color:#4fc1ff">
-                    <div class="vat-val" id="val-blue">0</div>
-                    <div class="vat-label">Blue (Cost)</div>
-                </div>
-                <div class="vat-col" style="color:#6bff84">
-                    <div class="vat-val" id="val-green">0</div>
-                    <div class="vat-label">Green (Luck)</div>
-                </div>
-            </div>
-
-            <div class="dye-list">
-                <div class="dye-item">
-                    <div>
-                        <div style="color:#ff6b6b; font-weight:bold;">Red Dye</div>
-                        <div style="font-size:0.8rem; opacity:0.7">Boil threads for efficiency (+10% MPS)</div>
-                    </div>
-                    <button class="dye-btn" onclick="buyDye('red')">Mix</button>
-                </div>
-                <div class="dye-item">
-                    <div>
-                        <div style="color:#4fc1ff; font-weight:bold;">Blue Dye</div>
-                        <div style="font-size:0.8rem; opacity:0.7">Lubricate the loom (-Cost)</div>
-                    </div>
-                    <button class="dye-btn" onclick="buyDye('blue')">Mix</button>
-                </div>
-                <div class="dye-item">
-                    <div>
-                        <div style="color:#6bff84; font-weight:bold;">Green Dye</div>
-                        <div style="font-size:0.8rem; opacity:0.7">Attract anomalies (+Luck)</div>
-                    </div>
-                    <button class="dye-btn" onclick="buyDye('green')">Mix</button>
-                </div>
-            </div>
-        </div>
-
         <div id="tab-tapestry" class="tab-content">
-            <h3 class="section-header">The Tapestry <span style="font-size:0.8rem; color:#d8bfd8" id="tree-silk">0 Silk</span></h3>
-            <div style="text-align:center; margin-bottom:20px; font-size:0.9rem; opacity:0.7;">
-                Prestige Pending: <span id="pending-silk" style="color:#fff; font-weight:bold;">0</span> Silk
+            <div class="prestige-header" style="text-align:center; margin-bottom:20px; border-bottom:1px solid var(--bord); padding-bottom:10px;">
+                <h3 style="color:#d8bfd8; margin:0;">THE TAPESTRY</h3>
+                <p style="font-size:0.8rem; color:#a0a0a0;">Evolve the structure of reality.</p>
+                <div style="font-size:1.2rem; margin:10px 0;">Available Silk: <span id="tree-silk" style="color:#d8bfd8; font-weight:bold;">0</span></div>
+                
+                <div style="font-size:0.9rem; margin-top:5px;">Prestige Pending: <span id="pending-silk" style="color:#fff;">0</span> Silk</div>
+                <div id="void-warning" style="color:orange; font-size:0.8rem; margin-bottom:5px;">Unravel at 1M Threads</div>
+                <button id="void-btn" class="main-btn" style="padding:10px; font-size:1rem; border-color:#d8bfd8; color:#d8bfd8; background:#2a0a2a; margin-bottom:0;" onclick="prestige()">UNRAVEL (RESET)</button>
             </div>
-            <button class="main-btn" id="void-btn" onclick="prestige()" style="border-color:#d8bfd8; color:#d8bfd8">Unravel Reality (Reset)</button>
-            <div class="tree-container" id="skill-tree" style="margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:20px;"></div>
+            
+            <div class="tree-container" id="skill-tree"></div>
         </div>
 
-        <div id="tab-monolith" class="tab-content">
-            <h3 class="section-header">The Monolith</h3>
-            <p style="font-size:0.8rem; opacity:0.7; margin-bottom:20px;">Enter simulations with strict rules to unlock permanent Runes.</p>
-            <div id="active-chal-ui" style="display:none; padding:15px; border:1px solid #ff4444; color:#ff4444; text-align:center; margin-bottom:20px;">
-                <strong>⚠ SIMULATION ACTIVE ⚠</strong><br>
-                <button class="dye-btn" onclick="exitChallenge()" style="margin-top:10px; border-color:#ff4444; color:#ff4444;">ABORT</button>
+        <div id="tab-cat" class="tab-content">
+            <div class="cat-container">
+                <div class="cat-eye">◎ ◎</div>
+                <div id="cat-text" class="cat-dialogue">"I require the ball of yarn. All of it."</div>
+                <div style="margin-bottom:10px; font-size: 0.9rem; color: #ffcc00;">
+                    Current C.A.T. Level: <span id="cat-level-display">0</span><br>
+                    Bonus: <span id="cat-bonus-display">1x</span> Multiplier
+                </div>
+                <button class="main-btn" id="cat-btn" style="border-color:#ffa500; color:#ffa500; background: #332200;" onclick="feedCat()">
+                    SACRIFICE EVERYTHING<br>
+                    <span style="font-size:0.7rem">Req: 1 Billion Threads. Reward: +1x Multiplier & 100 Silk.</span>
+                </button>
             </div>
-            <div id="challenge-list"></div>
         </div>
 
         <div id="tab-settings" class="tab-content">
-            <h3 class="section-header">System</h3>
-            <button class="main-btn" onclick="saveGame(); showToast('Saved')">Save Data</button>
-            <button class="main-btn" onclick="hardReset()" style="border-color:#ff4444; color:#ff4444;">Wipe Data</button>
-            
-            <h3 class="section-header" style="margin-top:30px;">Themes</h3>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="buy-toggle" onclick="setTheme('standard')">Standard</button>
-                <button class="buy-toggle" onclick="setTheme('blueprint')">Blueprint</button>
+            <div class="system-panel">
+                <div class="system-header">Statistics</div>
+                <div class="stats-row"><span>Lifetime Threads:</span> <span id="stat-lifetime" style="color:#fff">0</span></div>
+                <div class="stats-row"><span>Manual Clicks:</span> <span id="stat-clicks">0</span></div>
+                <div class="stats-row"><span>Play Time:</span> <span id="stat-time">0m</span></div>
+                <div class="stats-row"><span>Achievements:</span> <span id="stat-ach">0</span></div>
+                <div class="stats-row"><span>Current Version:</span> <span>v5.1 Challenges</span></div>
             </div>
+
+            <div class="system-panel">
+                <div class="system-header">Data Management</div>
+                <div class="save-controls">
+                    <button class="save-btn" onclick="saveGame(); showToast('Saved')">Save Local</button>
+                    <button class="save-btn" onclick="exportSave()">Export Code</button>
+                    <button class="save-btn" onclick="importSave()">Import Code</button>
+                    <button class="save-btn" onclick="hardReset()" style="color:red; border-color:red;">Wipe</button>
+                </div>
+                <p style="font-size:0.7rem; opacity:0.5; margin-top:5px; text-align:center;">Data is stored locally in your browser.</p>
+            </div>
+
+            <h3 style="color:var(--high)">Achievements</h3>
+            <div id="achievements-list" class="ach-grid"></div>
             
-            <div id="stats-area" style="margin-top:30px; font-size:0.8rem; opacity:0.5; font-family:monospace;"></div>
+            <h3 style="color:var(--high); margin-top:20px;">Themes</h3>
+            <div class="theme-grid" id="theme-selector">
+                <button class="theme-btn" onclick="setTheme('standard')">Standard</button>
+                <button class="theme-btn" onclick="setTheme('blueprint')">Blueprint</button>
+                <button class="theme-btn" onclick="setTheme('midnight')">Midnight</button>
+                <button class="theme-btn" onclick="setTheme('terminal')">Terminal</button>
+                <button class="theme-btn" onclick="setTheme('nebula')" style="border:1px solid #a0f;">Nebula</button>
+                <button class="theme-btn" id="theme-btn-golden" onclick="setTheme('golden')">GOLDEN</button>
+            </div>
         </div>
 
         <nav>
             <button class="nav-btn active" onclick="switchTab('weave', this)">Weave</button>
             <button class="nav-btn" onclick="switchTab('research', this)">Research</button>
-            <button class="nav-btn" onclick="switchTab('vault', this)">Vault</button>
-            <button class="nav-btn locked" id="nav-dye" onclick="switchTab('dye', this)">Vat</button>
-            <button class="nav-btn locked" id="nav-tree" onclick="switchTab('tapestry', this)">Tree</button>
-            <button class="nav-btn locked" id="nav-mono" onclick="switchTab('monolith', this)">Mono</button>
-            <button class="nav-btn" onclick="switchTab('settings', this)">Sys</button>
+            <button class="nav-btn special" onclick="switchTab('tapestry', this)">Tapestry</button>
+            <button class="nav-btn cat-tab locked" id="nav-cat" onclick="switchTab('cat', this)">C.A.T.</button>
+            <button class="nav-btn" onclick="switchTab('settings', this)">System</button>
         </nav>
     </div>
     <div id="toast-container"></div>
 
     <script>
-        /* --- GAME LOGIC (V6.1) --- */
+        /* --- GAME DATA V5.1 --- */
         let buyAmount = 1;
-        const artifactDB = [
-            { id: "art_rust", name: "Rusty Scissors", desc: "+25% Click, -10% Auto", type: "mixed", bonus: "click", val: 0.25, pen: "mps", penVal: 0.9, icon: "✂️" },
-            { id: "art_thimble", name: "Lucky Thimble", desc: "+50% Click Power", type: "buff", bonus: "click", val: 0.5, icon: "🥡" },
-            { id: "art_oil", name: "Machine Oil", desc: "+20% Auto Speed", type: "buff", bonus: "mps", val: 0.2, icon: "🛢️" },
-            { id: "art_glass", name: "Magnifying Glass", desc: "-5% Costs", type: "buff", bonus: "cost", val: 0.95, icon: "🔍" },
-            { id: "art_knot", name: "Impossible Knot", desc: "+100% Auto, No Clicks", type: "mixed", bonus: "mps", val: 1.0, pen: "click", penVal: 0, icon: "🥨" },
-            { id: "art_coin", name: "Ancient Coin", desc: "+50% Luck", type: "buff", bonus: "luck", val: 0.5, icon: "🪙" },
-            { id: "art_needle", name: "Diamond Needle", desc: "Click x3", type: "buff", bonus: "click", val: 2.0, icon: "💎" },
-            { id: "art_cube", name: "Void Cube", desc: "-10% Costs", type: "buff", bonus: "cost", val: 0.9, icon: "⬛" }
-        ];
-
-        const challengeDB = [
-            { id: "c1", name: "The Purist", desc: "Reach 5k Threads. CLICKS ONLY. No Generators.", reward: "+50% Click Power", goal: 5000 },
-            { id: "c2", name: "The Observer", desc: "Reach 10k Threads. NO CLICKS. Generators only.", reward: "+20% Passive MPS", goal: 10000 },
-            { id: "c3", name: "The Drought", desc: "Reach 50k Threads. Costs scale +50% faster.", reward: "-5% Global Costs", goal: 50000 }
-        ];
-
-        let gameData = {
+        let gameLoop;
+        
+        const defaultData = {
             threads: 0, totalThreads: 0, lifetimeTotal: 0, silk: 0, clicks: 0,
             startTime: Date.now(), theme: 'standard',
-            dyes: { red: 0, blue: 0, green: 0 },
-            artifacts: [], 
-            activeChallenge: null, completedChallenges: [],
+            catLevel: 0,
+            activeChallenge: null, // "c1", "c2", etc. or null
             generators: [
                 { id: 0, name: "Lint Roller", baseCost: 15, mps: 0.5, count: 0 },
                 { id: 1, name: "Grandma's Needle", baseCost: 100, mps: 4, count: 0 },
@@ -273,7 +267,9 @@
                 { id: 4, name: "Timeline Splicer", baseCost: 130000, mps: 250, count: 0 },
                 { id: 5, name: "Big Bang Forge", baseCost: 1500000, mps: 1000, count: 0 },
                 { id: 6, name: "Reality Engine", baseCost: 15000000, mps: 5000, count: 0 },
-                { id: 7, name: "Black Hole Weaver", baseCost: 250000000, mps: 25000, count: 0 }
+                { id: 7, name: "Black Hole Weaver", baseCost: 250000000, mps: 25000, count: 0 },
+                { id: 8, name: "Hyper-String Guitar", baseCost: 5000000000, mps: 120000, count: 0 },
+                { id: 9, name: "The Narrative Device", baseCost: 99000000000, mps: 600000, count: 0 }
             ],
             upgrades: [
                 { id: 0, name: "Thimble", cost: 250, type: "click", mult: 2, bought: false, desc: "Click x2" },
@@ -281,303 +277,709 @@
                 { id: 2, name: "Steel Wool", cost: 5000, type: "click", mult: 2, bought: false, desc: "Click x2" },
                 { id: 3, name: "Neon Thread", cost: 15000, type: "gen", gId: 1, mult: 2, bought: false, desc: "Needle x2" },
                 { id: 4, name: "The Algorithm", cost: 200000, type: "global", mult: 1.2, bought: false, desc: "Global +20%" },
-                { id: 5, name: "Flux Capacitor", cost: 25000000, type: "gen", gId: 6, mult: 2, bought: false, desc: "Engine x2" }
+                { id: 5, name: "Flux Capacitor", cost: 25000000, type: "gen", gId: 6, mult: 2, bought: false, desc: "Engine x2" },
+                { id: 6, name: "Quantum Entanglement", cost: 500000, type: "synergy", from: 0, to: 4, mult: 0.01, bought: false, desc: "Rollers boost Splicers" },
+                { id: 7, name: "Event Horizon", cost: 1000000000, type: "gen", gId: 7, mult: 3, bought: false, desc: "Black Hole x3" },
+                { id: 8, name: "Resonance", cost: 25000000000, type: "gen", gId: 8, mult: 2, bought: false, desc: "Guitars x2" },
+                { id: 9, name: "Author's Note", cost: 500000000000, type: "gen", gId: 9, mult: 2, bought: false, desc: "Narrative x2" }
             ],
             tree: [
                 { id: 0, row: 1, name: "Origin Knot", cost: 5, bought: false, parent: null, desc: "+50% Global MPS" },
-                { id: 1, row: 2, name: "Golden Eye", cost: 15, bought: false, parent: 0, desc: "More Golden Threads" },
+                { id: 1, row: 2, name: "Golden Eye", cost: 15, bought: false, parent: 0, desc: "Golden Threads x2 Freq" },
                 { id: 2, row: 2, name: "Efficiency", cost: 15, bought: false, parent: 0, desc: "-10% All Costs" },
-                { id: 3, row: 3, name: "Starter Kit", cost: 50, bought: false, parent: 2, desc: "Start runs with 500 Threads" },
-                { id: 4, row: 3, name: "Deep Pockets", cost: 100, bought: false, parent: 2, desc: "+1% MPS per Artifact found" },
-                { id: 5, row: 4, name: "Ascension", cost: 500, bought: false, parent: 3, desc: "Global MPS x3" }
+                { id: 3, row: 3, name: "Tension", cost: 50, bought: false, parent: 1, desc: "Click gets +1% MPS" },
+                { id: 4, row: 3, name: "Synergy", cost: 50, bought: false, parent: 2, desc: "+2% MPS per Achievement" },
+                { id: 5, row: 4, name: "Passive Silk", cost: 150, bought: false, parent: 3, desc: "Generate Silk over time" },
+                { id: 6, row: 4, name: "Deep Pockets", cost: 100, bought: false, parent: 2, desc: "Start runs with 2500 Threads" },
+                { id: 7, row: 4, name: "Chronos", cost: 100, bought: false, parent: 4, desc: "+10% MPS per Hour Played" },
+                { id: 8, row: 5, name: "Ascension", cost: 500, bought: false, parent: 7, desc: "Global MPS x3" }
+            ],
+            challenges: [
+                { id: "c1", name: "Broken Fingers", desc: "You cannot click to produce threads. Only generators work.", goal: 1000000, rewardDesc: "Generators +20% MPS", completed: false },
+                { id: "c2", name: "Inflation", desc: "Everything costs 5x as much.", goal: 10000000, rewardDesc: "-5% Building Costs", completed: false },
+                { id: "c3", name: "The Drought", desc: "Global Production is reduced by 90%.", goal: 500000, rewardDesc: "Global MPS +25%", completed: false },
+                { id: "c4", name: "Primitive", desc: "No upgrades can be bought. Generators only.", goal: 5000000, rewardDesc: "Unlock 'Golden' Theme", completed: false }
+            ],
+            achievements: [
+                { id: "a1", name: "First Stitch", req: 100, type: "total", unlocked: false, reward: "+1 Click", rewardDesc: "+1 Base Click" },
+                { id: "a2", name: "Master Weaver", req: 100000, type: "total", unlocked: false, reward: "+5% MPS", rewardDesc: "+5% Global MPS" },
+                { id: "a3", name: "Ascended", req: 1, type: "silk", unlocked: false, reward: "+10% Silk", rewardDesc: "Silk +10% (Fake visual)" },
+                { id: "a4", name: "Hoarder", req: 1000000, type: "current", unlocked: false, reward: "-1% Cost", rewardDesc: "-1% Costs" },
+                { id: "a5", name: "Cat Servant", req: 1, type: "cat", unlocked: false, reward: "Respect", rewardDesc: "The Cat tolerates you" },
+                { id: "a6", name: "Curiosity", req: 1, type: "punish", unlocked: false, reward: "Shame", rewardDesc: "Learned a lesson" },
+                { id: "a7", name: "Completionist", req: 20, type: "count", unlocked: false, reward: "Theme", rewardDesc: "Gold Theme" },
+                { id: "a8", name: "Speed Demon", req: 1000000, type: "mps", unlocked: false, reward: "+5% MPS", rewardDesc: "+5% Global MPS" },
+                { id: "a9", name: "Finger Workout", req: 5000, type: "clicks", unlocked: false, reward: "+2 Click", rewardDesc: "+2 Base Click" },
+                { id: "a10", name: "Architect", req: 500, type: "buildings", unlocked: false, reward: "-2% Cost", rewardDesc: "-2% Building Cost" },
+                { id: "a11", name: "Millionaire", req: 1000000, type: "silk", unlocked: false, reward: "+10% MPS", rewardDesc: "+10% Global MPS" },
+                { id: "a12", name: "Clicking Frenzy", req: 10000, type: "clicks", unlocked: false, reward: "+5 Click", rewardDesc: "+5 Base Click" },
+                { id: "a13", name: "Time Lord", req: 60, type: "time", unlocked: false, reward: "-1% Cost", rewardDesc: "-1% Costs" },
+                { id: "a14", name: "Billionaire", req: 1000000000, type: "total", unlocked: false, reward: "+5% MPS", rewardDesc: "+5% MPS" },
+                { id: "a15", name: "Trillionaire", req: 1000000000000, type: "total", unlocked: false, reward: "+5% MPS", rewardDesc: "+5% MPS" },
+                { id: "a16", name: "Carpal Tunnel", req: 25000, type: "clicks", unlocked: false, reward: "+10 Click", rewardDesc: "+10 Base Click" },
+                { id: "a17", name: "Nebula", req: 5, type: "tree", unlocked: false, reward: "Theme", rewardDesc: "Nebula Theme" },
+                { id: "a18", name: "Dedicated", req: 300, type: "time", unlocked: false, reward: "-2% Cost", rewardDesc: "-2% Costs (5hrs)" },
+                { id: "a19", name: "Black Hole", req: 1, type: "gen8", unlocked: false, reward: "Dense", rewardDesc: "Unlock Narratives" },
+                { id: "a20", name: "Infinity", req: 1000000000000000, type: "total", unlocked: false, reward: "Ego", rewardDesc: "You are the Loom" },
+                { id: "a22", name: "Starter Kit", req: 500, type: "total", unlocked: false, reward: "Boost", rewardDesc: "+5 Click & +100 Threads" }
             ]
         };
 
-        /* CORE */
+        let gameData = JSON.parse(JSON.stringify(defaultData));
+
+        /* --- ENGINE & CHALLENGE LOGIC --- */
         function getCost(base, count, amount) {
             let discount = 1;
             if(gameData.tree[2].bought) discount *= 0.9;
-            discount *= (1 - (Math.min(50, gameData.dyes.blue * 2) / 100));
-            getEquippedArtifacts().forEach(a => { if(a.bonus === 'cost') discount *= a.val; });
-            if(gameData.completedChallenges.includes('c3')) discount *= 0.95;
-
-            const r = (gameData.activeChallenge === 'c3') ? 1.5 : 1.15;
-            let total = 0;
-            if(amount === 1) total = Math.floor(base * Math.pow(r, count));
-            else total = Math.floor(base * ((Math.pow(r, amount) - 1) / (r - 1)) * Math.pow(r, count));
+            if(gameData.achievements.find(a=>a.id==='a4' && a.unlocked)) discount *= 0.99; 
+            if(gameData.achievements.find(a=>a.id==='a10' && a.unlocked)) discount *= 0.98;
+            if(gameData.achievements.find(a=>a.id==='a13' && a.unlocked)) discount *= 0.99;
+            if(gameData.achievements.find(a=>a.id==='a18' && a.unlocked)) discount *= 0.98;
             
-            return Math.floor(total * discount);
+            // Challenge Reward: Inflation
+            if(gameData.challenges[1].completed) discount *= 0.95;
+
+            // Challenge Penalty: Inflation
+            let penalty = 1;
+            if(gameData.activeChallenge === 'c2') penalty = 5;
+
+            const r = 1.15;
+            let totalCost = 0;
+            if(amount === 1) {
+                totalCost = Math.floor(base * Math.pow(r, count));
+            } else {
+                totalCost = Math.floor(base * ((Math.pow(r, amount) - 1) / (r - 1)) * Math.pow(r, count));
+            }
+            return Math.floor(totalCost * discount * penalty);
         }
 
         function getMPS() {
             let mps = 0;
             let globalMult = 1;
-            gameData.upgrades.filter(u=>u.bought && u.type==='global').forEach(u => globalMult *= u.mult);
-            if(gameData.tree[0].bought) globalMult *= 1.5;
-            if(gameData.tree[5].bought) globalMult *= 3;
-            if(gameData.tree[4].bought) globalMult *= (1 + (gameData.artifacts.length * 0.01));
-            globalMult *= (1 + (gameData.dyes.red * 0.1));
-            if(gameData.completedChallenges.includes('c2')) globalMult *= 1.2;
+            
+            // Challenge Penalty: Primitive (No upgrades count)
+            const upgradesActive = gameData.activeChallenge !== 'c4';
 
-            getEquippedArtifacts().forEach(a => {
-                if(a.bonus === 'mps') globalMult *= (1 + a.val);
-                if(a.pen === 'mps') globalMult *= a.penVal;
-            });
+            if (upgradesActive) {
+                gameData.upgrades.filter(u=>u.bought && u.type==='global').forEach(u => globalMult *= u.mult);
+            }
+            
+            // Tree Bonuses
+            if(gameData.tree[0].bought) globalMult *= 1.5;
+            if(gameData.tree[7].bought) {
+                const hours = (Date.now() - gameData.startTime) / 3600000;
+                globalMult *= (1 + (hours * 0.1));
+            }
+            if(gameData.tree[4].bought) {
+                const count = gameData.achievements.filter(a => a.unlocked).length;
+                globalMult *= (1 + (count * 0.02));
+            }
+            if(gameData.tree[8].bought) globalMult *= 3;
+
+            globalMult *= (1 + gameData.catLevel);
+            if(gameData.achievements.find(a=>a.id==='a2' && a.unlocked)) globalMult *= 1.05; 
+            if(gameData.achievements.find(a=>a.id==='a8' && a.unlocked)) globalMult *= 1.05; 
+            if(gameData.achievements.find(a=>a.id==='a11' && a.unlocked)) globalMult *= 1.10;
+            if(gameData.achievements.find(a=>a.id==='a14' && a.unlocked)) globalMult *= 1.05;
+            if(gameData.achievements.find(a=>a.id==='a15' && a.unlocked)) globalMult *= 1.05;
+
+            // Challenge Rewards
+            if(gameData.challenges[0].completed) globalMult *= 1.2; // Broken Fingers Reward
+            if(gameData.challenges[2].completed) globalMult *= 1.25; // Drought Reward
+
+            // Challenge Penalties
+            if(gameData.activeChallenge === 'c3') globalMult *= 0.1; // The Drought
 
             gameData.generators.forEach(g => {
                 let mult = 1;
-                gameData.upgrades.filter(u=>u.bought && u.type==='gen' && u.gId===g.id).forEach(u => mult *= u.mult);
+                if(upgradesActive) {
+                    gameData.upgrades.filter(u=>u.bought && u.type==='gen' && u.gId===g.id).forEach(u => mult *= u.mult);
+                    if(g.id === 4 && gameData.upgrades[6].bought) {
+                        const rollerCount = gameData.generators[0].count;
+                        mult *= (1 + (rollerCount * 0.01));
+                    }
+                }
                 mps += (g.mps * g.count * mult);
             });
             return mps * globalMult;
         }
 
         function getClickPower() {
-            if(gameData.activeChallenge === 'c2') return 0;
+            // Challenge Penalty: Broken Fingers
+            if (gameData.activeChallenge === 'c1') return 0;
+
             let power = 1;
-            getEquippedArtifacts().forEach(a => {
-                if(a.bonus === 'click') power += (getMPS() * a.val) + 1;
-                if(a.pen === 'click') power = 0;
-            });
-            if(power === 0) return 0;
-            gameData.upgrades.filter(u=>u.bought && u.type==='click').forEach(u => power *= u.mult);
-            if(gameData.completedChallenges.includes('c1')) power *= 1.5;
-            power += (getMPS() * 0.05); 
+            if(gameData.achievements.find(a=>a.id==='a1' && a.unlocked)) power += 1;
+            if(gameData.achievements.find(a=>a.id==='a9' && a.unlocked)) power += 2;
+            if(gameData.achievements.find(a=>a.id==='a12' && a.unlocked)) power += 5;
+            if(gameData.achievements.find(a=>a.id==='a16' && a.unlocked)) power += 10;
+            if(gameData.achievements.find(a=>a.id==='a22' && a.unlocked)) power += 5;
+            
+            // Challenge Penalty: Primitive
+            if (gameData.activeChallenge !== 'c4') {
+                gameData.upgrades.filter(u=>u.bought && u.type==='click').forEach(u => power *= u.mult);
+            }
+            
+            let mpsPercent = 0.03;
+            if(gameData.tree[3].bought) mpsPercent += 0.01;
+            
+            power += (getMPS() * mpsPercent); 
             return power;
         }
 
-        /* ACTIONS */
+        /* --- ACTIONS --- */
         function clickAction() {
+            if (gameData.activeChallenge === 'c1') {
+                showToast("Fingers broken. Cannot weave.");
+                return;
+            }
             const amt = getClickPower();
-            if(amt <= 0) { showToast("Clicks Disabled"); return; }
-            addThreads(amt);
+            gameData.threads += amt;
+            gameData.totalThreads += amt;
+            gameData.lifetimeTotal += amt;
             gameData.clicks++;
-            let luck = 1 + (gameData.dyes.green * 0.05);
-            getEquippedArtifacts().forEach(a => { if(a.bonus === 'luck') luck += a.val; });
-            if(Math.random() < (0.001 * luck)) findArtifact();
             updateUI();
         }
 
-        function addThreads(n) {
-            gameData.threads += n; gameData.totalThreads += n; gameData.lifetimeTotal += n;
-            if(gameData.activeChallenge) checkChal();
+        function setBuyAmount(amt) {
+            buyAmount = amt;
+            document.querySelectorAll('.buy-toggle').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-x'+amt).classList.add('active');
+            updateUI();
         }
 
         function buyGenerator(id) {
-            if(gameData.activeChallenge === 'c1') { showToast("No Generators in Challenge"); return; }
             const g = gameData.generators[id];
             const cost = getCost(g.baseCost, g.count, buyAmount);
-            if(gameData.threads >= cost) { gameData.threads -= cost; g.count += buyAmount; updateUI(); }
+            if(gameData.threads >= cost) {
+                gameData.threads -= cost;
+                g.count += buyAmount;
+                updateUI();
+            }
         }
 
         function buyUpgrade(id) {
-            const u = gameData.upgrades[id];
-            if(!u.bought && gameData.threads >= u.cost) { gameData.threads -= u.cost; u.bought = true; updateUI(); }
-        }
-
-        function buyDye(type) {
-            const cost = 10000 * Math.pow(5, gameData.dyes[type]);
-            if(gameData.threads >= cost) { gameData.threads -= cost; gameData.dyes[type]++; updateUI(); showToast("Mixed Dye"); }
-            else showToast(`Need ${format(cost)}`);
-        }
-
-        function setBuyAmount(n) { buyAmount = n; document.querySelectorAll('.buy-toggle').forEach(b=>b.classList.remove('active')); document.getElementById('btn-x'+n).classList.add('active'); updateUI(); }
-
-        /* ARTIFACTS */
-        function findArtifact() {
-            const owned = gameData.artifacts.map(a=>a.id);
-            const pool = artifactDB.filter(a=>!owned.includes(a.id));
-            if(pool.length === 0) { gameData.threads += getMPS()*60; showToast("Found Threads"); return; }
-            const found = pool[Math.floor(Math.random()*pool.length)];
-            gameData.artifacts.push({ id: found.id, equipped: false });
-            showToast(`Found: ${found.name}`);
-            renderArtifacts();
-        }
-        function getEquippedArtifacts() { return gameData.artifacts.filter(a=>a.equipped).map(a=>artifactDB.find(d=>d.id===a.id)); }
-        function toggleArtifact(id) {
-            const a = gameData.artifacts.find(x=>x.id===id);
-            if(a.equipped) a.equipped = false;
-            else if(gameData.artifacts.filter(x=>x.equipped).length < 2) a.equipped = true;
-            else { showToast("Max 2 Equipped"); return; }
-            renderArtifacts(); updateUI();
-        }
-        function renderArtifacts() {
-            const grid = document.getElementById('artifact-list');
-            grid.innerHTML = "";
-            gameData.artifacts.forEach(a => {
-                const db = artifactDB.find(d=>d.id===a.id);
-                grid.innerHTML += `<div class="artifact-slot ${a.equipped?'equipped':''}" onclick="toggleArtifact('${a.id}')">
-                    <div class="art-status">EQUIPPED</div>
-                    <div class="art-icon">${db.icon}</div>
-                    <div class="art-info"><div>${db.name}</div><span>${db.desc}</span></div>
-                </div>`;
-            });
-            document.getElementById('art-count').innerText = `${gameData.artifacts.length}/${artifactDB.length}`;
-        }
-
-        /* CHALLENGES */
-        function enterChallenge(id) { if(confirm("Start Simulation? (Resets run)")) { gameData.activeChallenge = id; prestige(true); switchTab('weave', document.querySelector('.nav-btn')); } }
-        function exitChallenge() { if(confirm("Abort?")) { gameData.activeChallenge = null; prestige(true); } }
-        function checkChal() {
-            const c = challengeDB.find(x=>x.id===gameData.activeChallenge);
-            if(gameData.threads >= c.goal) { alert(`Simulation Complete. Unlocked: ${c.reward}`); gameData.completedChallenges.push(c.id); gameData.activeChallenge = null; prestige(true); }
-        }
-
-        /* TREE & PRESTIGE */
-        function prestige(force=false) {
-            if(!force && gameData.totalThreads < 1000000) return;
-            if(!force) {
-                const pending = Math.floor(Math.sqrt(gameData.totalThreads/1000000));
-                if(!confirm(`Unravel? +${pending} Silk`)) return;
-                gameData.silk += pending;
+            if (gameData.activeChallenge === 'c4') {
+                showToast("Upgrades disabled in this Challenge.");
+                return;
             }
-            gameData.threads = gameData.tree[3].bought ? 500 : 0;
-            gameData.totalThreads = 0;
-            gameData.generators.forEach(g=>g.count=0);
-            gameData.upgrades.forEach(u=>u.bought=false);
-            updateUI(); saveGame();
+            const u = gameData.upgrades[id];
+            if(!u.bought && gameData.threads >= u.cost) {
+                gameData.threads -= u.cost;
+                u.bought = true;
+                updateUI();
+            }
         }
+
+        /* --- TREE SYSTEM --- */
         function buyTreeNode(id) {
-            const n = gameData.tree.find(x=>x.id===id);
-            if(!n || n.bought || (n.parent!==null && !gameData.tree.find(x=>x.id===n.parent).bought)) return;
-            if(gameData.silk >= n.cost) { gameData.silk -= n.cost; n.bought = true; renderTree(); updateUI(); }
+            const node = gameData.tree.find(n => n.id === id);
+            if(!node || node.bought) return;
+            
+            if(node.parent !== null && !gameData.tree.find(n=>n.id === node.parent).bought) {
+                showToast("Unlock previous node first.");
+                return;
+            }
+
+            if(gameData.silk >= node.cost) {
+                gameData.silk -= node.cost;
+                node.bought = true;
+                updateUI();
+                showToast(`Unlocked: ${node.name}`);
+            } else {
+                showToast("Not enough Silk.");
+            }
         }
+
         function renderTree() {
-            const el = document.getElementById('skill-tree');
-            el.innerHTML = "";
-            gameData.tree.forEach(n => {
-                const pBought = n.parent===null || gameData.tree.find(x=>x.id===n.parent).bought;
-                el.innerHTML += `<div style="padding:10px; border:1px solid #555; width:200px; text-align:center; cursor:pointer; background:${n.bought?'#d8bfd8':'#222'}; color:${n.bought?'#000':'#fff'}; opacity:${pBought?1:0.3}" onclick="buyTreeNode(${n.id})">
-                    <b>${n.name}</b><br><span style="font-size:0.7rem">${n.desc}</span><br>${n.bought?'Owned':n.cost+' Silk'}
-                </div>`;
+            const container = document.getElementById('skill-tree');
+            container.innerHTML = "";
+            const rows = [1, 2, 3, 4, 5];
+            rows.forEach(rNum => {
+                const nodesInRow = gameData.tree.filter(n => n.row === rNum);
+                if(nodesInRow.length > 0) {
+                    if(rNum > 1) {
+                         const conn = document.createElement('div');
+                         conn.className = 'row-connector';
+                         conn.innerHTML = "↓";
+                         container.appendChild(conn);
+                    }
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'tree-row';
+                    
+                    nodesInRow.forEach(node => {
+                        const el = document.createElement('div');
+                        el.className = 'tree-node';
+                        let parentBought = (node.parent === null) ? true : gameData.tree.find(n=>n.id === node.parent).bought;
+                        if(node.bought) el.classList.add('bought');
+                        else if (parentBought) el.classList.add('unlocked');
+                        else el.classList.add('locked');
+                        
+                        el.onclick = () => buyTreeNode(node.id);
+                        el.innerHTML = `<div class="node-name">${node.bought ? '✔ ' + node.name : node.name}</div>
+                            <div class="node-desc">${node.desc}</div><div class="node-cost">${node.cost} Silk</div>`;
+                        rowDiv.appendChild(el);
+                    });
+                    container.appendChild(rowDiv);
+                }
             });
         }
 
-        /* UTILS */
-        function format(n) {
-            if(n<1000) return Math.floor(n);
-            if(n<1000000) return (n/1000).toFixed(2)+"k";
-            if(n<1000000000) return (n/1000000).toFixed(2)+"M";
-            return (n/1000000000).toFixed(2)+"B";
-        }
-        function showToast(msg) {
-            const el = document.createElement('div'); el.className='toast'; el.innerText=msg;
-            document.getElementById('toast-container').appendChild(el);
-            setTimeout(()=>el.remove(),3000);
-        }
-        function switchTab(id, btn) {
-            if(btn.classList.contains('locked')) return;
-            document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-            document.getElementById('tab-'+id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-            btn.classList.add('active');
-            if(id==='vault') renderArtifacts();
-            if(id==='tapestry') renderTree();
-            if(id==='monolith') renderChallenges();
-        }
+        /* --- CHALLENGE SYSTEM --- */
         function renderChallenges() {
-            const el = document.getElementById('challenge-list'); el.innerHTML = "";
-            challengeDB.forEach(c => {
-                const act = gameData.activeChallenge === c.id;
-                const comp = gameData.completedChallenges.includes(c.id);
-                el.innerHTML += `<div class="challenge-card ${act?'active':''} ${comp?'completed':''}">
-                    <div style="font-weight:bold; color:#fff">${c.name} ${comp?'(DONE)':''}</div>
-                    <div style="font-size:0.8rem; color:#aaa; margin:5px 0">${c.desc}</div>
-                    <div style="font-size:0.8rem; color:var(--highlight-color)">Reward: ${c.reward}</div>
-                    ${!act && !comp ? `<button class="main-btn" style="margin-top:10px; padding:5px; font-size:0.8rem" onclick="enterChallenge('${c.id}')">Start</button>` : ''}
-                </div>`;
+            const container = document.getElementById('challenges-list');
+            container.innerHTML = "";
+            
+            gameData.challenges.forEach(c => {
+                const div = document.createElement('div');
+                div.className = `card challenge ${c.completed ? 'completed' : ''}`;
+                
+                let btnText = "Start";
+                let btnAction = `startChallenge('${c.id}')`;
+                let btnDisabled = "";
+
+                if (gameData.activeChallenge === c.id) {
+                    // Check completion
+                    if (gameData.threads >= c.goal) {
+                        btnText = "COMPLETE";
+                        btnAction = `completeChallenge('${c.id}')`;
+                        div.style.borderColor = "#fff";
+                        div.style.boxShadow = "0 0 15px #fff";
+                    } else {
+                        btnText = "Exit";
+                        btnAction = `exitChallenge()`;
+                    }
+                } else if (gameData.activeChallenge !== null) {
+                    btnDisabled = "disabled";
+                }
+
+                if (c.completed && gameData.activeChallenge !== c.id) {
+                    btnText = "Replay";
+                }
+
+                div.innerHTML = `
+                    <div class="card-info">
+                        <h4 style="color:var(--high)">${c.name} ${c.completed ? '✔' : ''}</h4>
+                        <p style="color:#ffbbbb">${c.desc}</p>
+                        <p style="font-size:0.7rem; color:#fff;">Goal: ${format(c.goal)} Threads</p>
+                        <p style="font-size:0.7rem; color:#00ff00;">Reward: ${c.rewardDesc}</p>
+                    </div>
+                    <div class="card-meta">
+                        <button class="challenge-btn" onclick="${btnAction}" ${btnDisabled}>${btnText}</button>
+                    </div>
+                `;
+                container.appendChild(div);
             });
         }
-        function setTheme(t) { document.body.setAttribute('data-theme', t); gameData.theme = t; }
 
-        /* GOLDEN THREAD */
-        function spawnGoldenThread() {
-            const el = document.getElementById('golden-thread');
-            const app = document.getElementById('app');
-            el.style.top = (Math.random()*(app.offsetHeight-40)+20)+"px";
-            el.style.left = (Math.random()*(app.offsetWidth-40)+10)+"px";
-            el.style.display = 'block';
-            setTimeout(()=>{ if(el.style.display==='block') el.style.display='none'; }, 6000);
-        }
-        function clickGoldenThread() {
-            document.getElementById('golden-thread').style.display='none';
-            let amt = Math.max(500, getMPS()*60);
-            addThreads(amt); showToast("Golden Thread!");
-            if(Math.random() < 0.05) findArtifact();
+        function startChallenge(id) {
+            if(!confirm("Starting a challenge performs a reset (Threads, Generators, Upgrades). You keep Silk and Tree nodes. Proceed?")) return;
+            
+            // Soft Reset
+            gameData.threads = 0;
+            gameData.totalThreads = 0; // Total in *current run*
+            gameData.generators.forEach(g => g.count = 0);
+            gameData.upgrades.forEach(u => u.bought = false);
+            
+            // Apply Starter Kit if unlocked (Quality of Life)
+            if (gameData.achievements.find(a=>a.id==='a22' && a.unlocked)) {
+                gameData.threads = 100;
+            }
+            if (gameData.tree[6].bought) { // Deep Pockets
+                 gameData.threads += 2500;
+            }
+
+            gameData.activeChallenge = id;
+            updateUI();
+            showToast("Challenge Started!");
         }
 
-        /* LOOP & SAVE */
+        function exitChallenge() {
+            if(!confirm("Abandon challenge? You will reset again.")) return;
+            gameData.activeChallenge = null;
+            // Soft Reset back to normal
+            gameData.threads = 0;
+            gameData.totalThreads = 0;
+            gameData.generators.forEach(g => g.count = 0);
+            gameData.upgrades.forEach(u => u.bought = false);
+            updateUI();
+        }
+
+        function completeChallenge(id) {
+            const chal = gameData.challenges.find(c => c.id === id);
+            chal.completed = true;
+            gameData.activeChallenge = null;
+            showToast(`Challenge ${chal.name} Completed!`);
+            
+            // Reset to normal
+            gameData.threads = 0;
+            gameData.totalThreads = 0;
+            gameData.generators.forEach(g => g.count = 0);
+            gameData.upgrades.forEach(u => u.bought = false);
+            
+            saveGame();
+            updateUI();
+        }
+
+        /* --- PRESTIGE --- */
+        function prestige() {
+            if(gameData.totalThreads < 1000000) return;
+            let pending = Math.floor(Math.sqrt(gameData.totalThreads / 1000000));
+            if(!confirm(`Unravel? The Loom will be reset, but you will gain ${pending} Silk.`)) return;
+
+            gameData.silk += pending;
+            
+            // RESET
+            gameData.threads = 0;
+            gameData.totalThreads = 0;
+            gameData.activeChallenge = null; // Exit challenge on prestige
+            gameData.generators.forEach(g => g.count = 0);
+            gameData.upgrades.forEach(u => u.bought = false);
+
+            if(gameData.tree[6].bought) gameData.threads = 2500;
+            if(gameData.achievements.find(a=>a.id==='a22' && a.unlocked)) gameData.threads += 100;
+            
+            showToast("Reality Unraveled.");
+            updateUI();
+            saveGame();
+        }
+
+        function hardReset() {
+            if(confirm("WIPE SAVE? This cannot be undone.")) {
+                localStorage.removeItem('loomSaveV5_1');
+                location.reload();
+            }
+        }
+
+        /* --- CAT SYSTEM --- */
+        function feedCat() {
+            if(gameData.threads >= 1000000000) {
+                gameData.threads = 0;
+                gameData.generators.forEach(g => g.count = 0);
+                gameData.catLevel++;
+                gameData.silk += 100;
+                showToast("The Cat is pleased.");
+                updateUI();
+            }
+        }
+
+        /* --- UI & FORMATTING --- */
+        function format(num) {
+            if(num < 1000) return Math.floor(num);
+            const suffixes = ["", "k", "M", "B", "T", "Qa", "Qi", "Sx"];
+            const suffixNum = Math.floor(("" + Math.floor(num)).length / 3);
+            let shortValue = parseFloat((suffixNum != 0 ? (num / Math.pow(1000, suffixNum)) : num).toPrecision(3));
+            if (shortValue % 1 != 0) shortValue = shortValue.toFixed(1);
+            return shortValue + suffixes[suffixNum];
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-'+tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function setTheme(theme) {
+            if (theme === 'golden' && !gameData.achievements.find(a=>a.id==='a7' && a.unlocked) && !gameData.challenges[3].completed) {
+                showToast("Locked: Complete 20 Ach. or 'Primitive'");
+                return;
+            }
+            if (theme === 'nebula' && !gameData.achievements.find(a=>a.id==='a17' && a.unlocked)) {
+                showToast("Locked: Buy 5 Tree Nodes");
+                return;
+            }
+            gameData.theme = theme;
+            document.body.setAttribute('data-theme', theme);
+        }
+
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerText = msg;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(() => t.remove(), 3500);
+        }
+
         function updateUI() {
             document.getElementById('score').innerText = format(gameData.threads);
-            document.getElementById('mps').innerText = format(getMPS()) + " / sec";
+            document.getElementById('silk-score').innerText = format(gameData.silk);
+            document.getElementById('mps').innerText = format(getMPS()) + " per second";
             
-            // Unlocks
-            if(gameData.lifetimeTotal > 10000) document.getElementById('nav-tree').classList.remove('locked');
-            if(gameData.lifetimeTotal > 100000) document.getElementById('nav-dye').classList.remove('locked');
-            if(gameData.lifetimeTotal > 500000) document.getElementById('nav-mono').classList.remove('locked');
-
-            // Generator List
-            const gList = document.getElementById('generators-list');
-            if(gList.innerHTML === "") {
-                gameData.generators.forEach(g => {
-                    gList.innerHTML += `<div class="card" id="gen-${g.id}" onclick="buyGenerator(${g.id})">
-                        <div class="card-info"><h4>${g.name}</h4><p>+${g.mps} mps</p></div>
-                        <div class="card-meta"><div class="card-count" id="g-count-${g.id}">0</div><div class="card-cost" id="g-cost-${g.id}">0</div></div>
-                    </div>`;
-                });
+            // Titles & Headers
+            const title = gameData.activeChallenge 
+                ? `[CHALLENGE] The Loom` 
+                : `The Loom v5.1`;
+            document.title = title;
+            
+            const banner = document.getElementById('challenge-banner');
+            if (gameData.activeChallenge) {
+                banner.style.display = 'block';
+                const currentChal = gameData.challenges.find(c => c.id === gameData.activeChallenge);
+                banner.innerText = `⚠ ${currentChal.name.toUpperCase()} ACTIVE`;
+            } else {
+                banner.style.display = 'none';
             }
-            gameData.generators.forEach(g => {
-                const c = getCost(g.baseCost, g.count, buyAmount);
-                document.getElementById(`gen-${g.id}`).className = `card ${gameData.threads>=c?'':'disabled'}`;
-                document.getElementById(`g-count-${g.id}`).innerText = g.count;
-                document.getElementById(`g-cost-${g.id}`).innerText = format(c);
+
+            // Generators
+            const genList = document.getElementById('generators-list');
+            genList.innerHTML = "";
+            gameData.generators.forEach((g, i) => {
+                const cost = getCost(g.baseCost, g.count, buyAmount);
+                const div = document.createElement('div');
+                div.className = `card ${gameData.threads < cost ? 'disabled' : ''}`;
+                div.onclick = () => buyGenerator(i);
+                div.innerHTML = `
+                    <div class="card-info">
+                        <h4>${g.name}</h4>
+                        <p>+${format(g.mps)}/s</p>
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-count">${g.count}</div>
+                        <div class="card-cost">${format(cost)}</div>
+                    </div>
+                `;
+                genList.appendChild(div);
             });
 
             // Upgrades
-            const uList = document.getElementById('upgrades-list');
-            uList.innerHTML = "";
-            gameData.upgrades.filter(u=>!u.bought).forEach(u => {
-                uList.innerHTML += `<div class="card ${gameData.threads>=u.cost?'':'disabled'}" onclick="buyUpgrade(${u.id})">
-                    <div class="card-info"><h4>${u.name}</h4><p>${u.desc}</p></div><div class="card-meta"><div class="card-cost">${format(u.cost)}</div></div>
-                </div>`;
+            const upList = document.getElementById('upgrades-list');
+            upList.innerHTML = "";
+            gameData.upgrades.forEach((u, i) => {
+                if(!u.bought) {
+                    const div = document.createElement('div');
+                    div.className = `card ${gameData.threads < u.cost ? 'disabled' : ''}`;
+                    if(gameData.activeChallenge === 'c4') div.className += " disabled";
+                    
+                    div.onclick = () => buyUpgrade(i);
+                    div.innerHTML = `
+                        <div class="card-info">
+                            <h4>${u.name}</h4>
+                            <p>${u.desc}</p>
+                        </div>
+                        <div class="card-meta">
+                            <div class="card-cost">${format(u.cost)}</div>
+                        </div>
+                    `;
+                    upList.appendChild(div);
+                }
             });
-            if(uList.innerHTML==="") uList.innerHTML="<div style='text-align:center; opacity:0.5; padding:20px'>Research Complete</div>";
 
-            // Dyes & Silk
-            document.getElementById('val-red').innerText = gameData.dyes.red;
-            document.getElementById('val-blue').innerText = gameData.dyes.blue;
-            document.getElementById('val-green').innerText = gameData.dyes.green;
-            document.getElementById('tree-silk').innerText = gameData.silk + " Silk";
-            document.getElementById('pending-silk').innerText = Math.floor(Math.sqrt(gameData.totalThreads/1000000));
-            document.getElementById('void-btn').disabled = gameData.totalThreads < 1000000;
+            // Challenges
+            renderChallenges();
 
-            // Challenge Active UI
-            document.getElementById('active-chal-ui').style.display = gameData.activeChallenge ? 'block' : 'none';
-            document.getElementById('stats-area').innerHTML = `Time: ${Math.floor((Date.now()-gameData.startTime)/60000)}m | Ver: 6.1`;
-        }
+            // Tree logic
+            document.getElementById('tree-silk').innerText = format(gameData.silk);
+            let pending = 0;
+            if(gameData.totalThreads >= 1000000) pending = Math.floor(Math.sqrt(gameData.totalThreads / 1000000));
+            document.getElementById('pending-silk').innerText = pending;
+            
+            if(gameData.totalThreads >= 1000000) {
+                document.getElementById('void-btn').style.display = 'block';
+                document.getElementById('void-warning').style.display = 'block';
+            } else {
+                document.getElementById('void-btn').style.display = 'none';
+                document.getElementById('void-warning').style.display = 'none';
+            }
 
-        setInterval(() => { if(getMPS()>0) addThreads(getMPS()/10); updateUI(); }, 100);
-        setInterval(() => saveGame(), 15000);
-        (function loopG(){ setTimeout(()=>{ spawnGoldenThread(); loopG(); }, Math.random()*30000+20000); })();
-        
-        function saveGame() { localStorage.setItem('loomSaveV6_1', JSON.stringify(gameData)); }
-        function loadGame() {
-            let s = JSON.parse(localStorage.getItem('loomSaveV6_1'));
-            if(!s) s = JSON.parse(localStorage.getItem('loomSaveV6'));
-            if(s) {
-                gameData = {...gameData, ...s}; 
-                // fix array merges
-                if(s.generators) s.generators.forEach((g,i)=>gameData.generators[i].count=g.count);
-                if(s.upgrades) s.upgrades.forEach((u,i)=>gameData.upgrades[i].bought=u.bought);
-                if(s.tree) s.tree.forEach(t=>{const m=gameData.tree.find(n=>n.id===t.id); if(m) m.bought=t.bought;});
-                if(s.artifacts) gameData.artifacts = s.artifacts;
-                setTheme(gameData.theme);
+            renderTree();
+
+            // Silk Visibility
+            if(gameData.silk > 0 || gameData.tree.some(n=>n.bought)) {
+                document.querySelector('.silk-display').style.display = 'block';
+            }
+
+            // Cat
+            if(gameData.threads >= 100000000 || gameData.catLevel > 0 || gameData.achievements.find(a=>a.id==='a5' && a.unlocked)) {
+                document.getElementById('nav-cat').classList.remove('locked');
+            }
+            document.getElementById('cat-level-display').innerText = gameData.catLevel;
+            document.getElementById('cat-bonus-display').innerText = (1 + gameData.catLevel) + "x";
+            document.getElementById('cat-btn').disabled = gameData.threads < 1000000000;
+
+            // Stats
+            document.getElementById('stat-lifetime').innerText = format(gameData.lifetimeTotal);
+            document.getElementById('stat-clicks').innerText = format(gameData.clicks);
+            document.getElementById('stat-ach').innerText = gameData.achievements.filter(a=>a.unlocked).length + "/" + gameData.achievements.length;
+            const mins = Math.floor((Date.now() - gameData.startTime)/60000);
+            document.getElementById('stat-time').innerText = mins + "m";
+
+            // Achievements
+            checkAchievements();
+            const achList = document.getElementById('achievements-list');
+            achList.innerHTML = "";
+            gameData.achievements.forEach(a => {
+                const div = document.createElement('div');
+                div.className = 'ach-item';
+                div.style.color = a.unlocked ? '#0f0' : '#555';
+                div.innerHTML = `
+                    <div style="font-weight:bold">${a.name} ${a.unlocked ? '✔' : ''}</div>
+                    <div style="font-size:0.8rem">${a.req} ${a.type}</div>
+                    <div class="ach-reward">${a.rewardDesc}</div>
+                `;
+                achList.appendChild(div);
+            });
+            
+            // Themes logic
+            if(!gameData.achievements.find(a=>a.id==='a7' && a.unlocked) && !gameData.challenges[3].completed) {
+                document.getElementById('theme-btn-golden').classList.add('locked');
+            } else {
+                document.getElementById('theme-btn-golden').classList.remove('locked');
             }
         }
-        function hardReset() { if(confirm("Wipe?")) { localStorage.removeItem('loomSaveV6_1'); location.reload(); } }
-        
+
+        /* --- ACHIEVEMENT LOGIC --- */
+        function checkAchievements() {
+            gameData.achievements.forEach(a => {
+                if(a.unlocked) return;
+                let pass = false;
+                if(a.type === 'total' && gameData.totalThreads >= a.req) pass = true;
+                if(a.type === 'current' && gameData.threads >= a.req) pass = true;
+                if(a.type === 'silk' && gameData.silk >= a.req) pass = true;
+                if(a.type === 'mps' && getMPS() >= a.req) pass = true;
+                if(a.type === 'clicks' && gameData.clicks >= a.req) pass = true;
+                if(a.type === 'buildings') {
+                    let totalB = 0; gameData.generators.forEach(g => totalB += g.count);
+                    if(totalB >= a.req) pass = true;
+                }
+                if(a.type === 'time') {
+                    let mins = (Date.now() - gameData.startTime)/60000;
+                    if(mins >= a.req) pass = true;
+                }
+                if(a.type === 'cat' && gameData.catLevel >= a.req) pass = true;
+                if(a.type === 'count' && gameData.achievements.filter(x=>x.unlocked).length >= a.req) pass = true;
+                if(a.type === 'tree' && gameData.tree.filter(x=>x.bought).length >= a.req) pass = true;
+                if(a.type === 'gen8' && gameData.generators[7].count >= a.req) pass = true;
+
+                if(pass) {
+                    a.unlocked = true;
+                    showToast("Achievement: " + a.name);
+                }
+            });
+        }
+
+        /* --- GOLDEN THREAD --- */
+        setInterval(() => {
+            const chance = gameData.tree[1].bought ? 0.04 : 0.02; // 2% or 4% per second
+            if(Math.random() < chance && document.getElementById('golden-thread').style.display !== 'block') {
+                const gt = document.getElementById('golden-thread');
+                gt.style.display = 'block';
+                gt.style.top = Math.random() * 80 + 10 + "%";
+                gt.style.left = Math.random() * 80 + 10 + "%";
+                setTimeout(() => { gt.style.display = 'none'; }, 5000);
+            }
+        }, 1000);
+
+        function clickGoldenThread() {
+            const gt = document.getElementById('golden-thread');
+            gt.style.display = 'none';
+            const bonus = getMPS() * 60; // 1 minute of production
+            const minBonus = getClickPower() * 50;
+            const gain = Math.max(bonus, minBonus);
+            gameData.threads += gain;
+            gameData.totalThreads += gain;
+            showToast(`Golden Thread! +${format(gain)}`);
+            updateUI();
+        }
+
+        /* --- SAVE SYSTEM --- */
+        function saveGame() {
+            localStorage.setItem('loomSaveV5_1', JSON.stringify(gameData));
+        }
+
+        function loadGame() {
+            const save = localStorage.getItem('loomSaveV5_1');
+            if(save) {
+                try {
+                    const savedData = JSON.parse(save);
+                    // Merge save with default data in case of updates
+                    gameData = { ...defaultData, ...savedData };
+                    
+                    // Specific check for arrays (gens, upgrades, tree, challenges) to ensure structure matches
+                    if(savedData.generators) {
+                        gameData.generators.forEach((g, i) => {
+                            if(savedData.generators[i]) g.count = savedData.generators[i].count;
+                        });
+                    }
+                    if(savedData.upgrades) {
+                        gameData.upgrades.forEach((u, i) => {
+                            if(savedData.upgrades[i]) u.bought = savedData.upgrades[i].bought;
+                        });
+                    }
+                    if(savedData.tree) {
+                        gameData.tree.forEach((t, i) => {
+                            if(savedData.tree[i]) t.bought = savedData.tree[i].bought;
+                        });
+                    }
+                    if(savedData.achievements) {
+                        gameData.achievements.forEach((a, i) => {
+                            if(savedData.achievements[i]) a.unlocked = savedData.achievements[i].unlocked;
+                        });
+                    }
+                    if(savedData.challenges) {
+                        gameData.challenges.forEach((c, i) => {
+                            if(savedData.challenges[i]) c.completed = savedData.challenges[i].completed;
+                        });
+                    }
+
+                    setTheme(gameData.theme);
+                } catch(e) { console.error("Save Corrupt", e); }
+            }
+            updateUI();
+        }
+
+        function exportSave() {
+            const str = btoa(JSON.stringify(gameData));
+            prompt("Copy code:", str);
+        }
+
+        function importSave() {
+            const str = prompt("Paste code:");
+            if(str) {
+                try {
+                    const json = atob(str);
+                    localStorage.setItem('loomSaveV5_1', json);
+                    location.reload();
+                } catch(e) { alert("Invalid code"); }
+            }
+        }
+
+        /* --- INIT --- */
+        document.addEventListener('keydown', (e) => {
+            if(e.code === 'Space') {
+                e.preventDefault(); // Stop scrolling
+                clickAction();
+                // Add button press effect visual
+                const btn = document.getElementById('stitch-btn');
+                btn.style.transform = "translateY(4px)";
+                setTimeout(() => btn.style.transform = "none", 100);
+            }
+        });
+
+        // Game Loop
+        gameLoop = setInterval(() => {
+            const mps = getMPS();
+            const gain = mps / 10; // 10 ticks per second
+            
+            gameData.threads += gain;
+            gameData.totalThreads += gain;
+            gameData.lifetimeTotal += gain;
+
+            // Passive Silk (Tree Node 5)
+            if(gameData.tree[5].bought) {
+                gameData.silk += 0.01; // very slow passive silk
+            }
+
+            updateUI();
+        }, 100);
+
+        // Auto Save
+        setInterval(() => {
+            saveGame();
+        }, 30000);
+
         loadGame();
-        updateUI();
     </script>
 </body>
 </html>
